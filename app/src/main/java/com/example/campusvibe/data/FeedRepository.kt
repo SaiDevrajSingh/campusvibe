@@ -48,9 +48,9 @@ class FeedRepository {
         val userId = auth.currentUser?.uid ?: return
         val postRef = firestore.collection("posts").document(postId)
         if (liked) {
-            postRef.update("likes", FieldValue.arrayUnion(userId)).await()
+            postRef.update("liked_by", FieldValue.arrayUnion(userId)).await()
         } else {
-            postRef.update("likes", FieldValue.arrayRemove(userId)).await()
+            postRef.update("liked_by", FieldValue.arrayRemove(userId)).await()
         }
     }
 }

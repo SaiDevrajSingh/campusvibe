@@ -19,6 +19,7 @@ class FeedFragment : Fragment() {
 
     private val feedViewModel: FeedViewModel by viewModels()
     private lateinit var feedAdapter: FeedAdapter
+    private lateinit var storyAdapter: StoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,17 +32,53 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupStoriesRecyclerView()
+        setupPostsRecyclerView()
+        setupObservers()
+        setupClickListeners()
+        loadData()
+    }
+
+    private fun setupStoriesRecyclerView() {
+        storyAdapter = StoryAdapter { story ->
+            if (story.isPlaceholder && story.id == "add_story") {
+                // Open Add Story activity for the placeholder
+                val intent = Intent(requireContext(), AddStoryActivity::class.java)
+                startActivity(intent)
+            } else {
+                // Open Story Viewer for actual stories
+                val intent = Intent(requireContext(), StoryViewActivity::class.java).apply {
+                    putExtra("IMAGE_URL", story.imageUrl)
+                    putExtra("USERNAME", story.userId) // TODO: Get actual username
+                }
+                startActivity(intent)
+            }
+        }
+
+        binding.storiesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = storyAdapter
+        }
+    }
+
+    private fun setupPostsRecyclerView() {
         feedAdapter = FeedAdapter()
 
         binding.postsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = feedAdapter
         }
+    }
 
-        feedViewModel.posts.observe(viewLifecycleOwner) {
-            feedAdapter.submitList(it)
-            binding.emptyTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+    private fun setupObservers() {
+        feedViewModel.posts.observe(viewLifecycleOwner) { posts ->
+            feedAdapter.submitList(posts)
+            binding.emptyTextView.visibility = if (posts.isEmpty()) View.VISIBLE else View.GONE
             binding.errorTextView.visibility = View.GONE
+        }
+
+        feedViewModel.stories.observe(viewLifecycleOwner) { stories ->
+            storyAdapter.submitList(stories)
         }
 
         feedViewModel.showError.observe(viewLifecycleOwner) {
@@ -49,17 +86,20 @@ class FeedFragment : Fragment() {
             binding.emptyTextView.visibility = View.GONE
             binding.postsRecyclerView.visibility = View.GONE
         }
+    }
 
-        binding.addStoryButton.setOnClickListener {
-            val intent = Intent(requireContext(), AddStoryActivity::class.java)
-            startActivity(intent)
-        }
+    private fun setupClickListeners() {
+        // Removed addStoryButton click listener since we now have it in the stories row
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             feedViewModel.loadPosts()
+            feedViewModel.loadStories()
         }
+    }
 
+    private fun loadData() {
         feedViewModel.loadPosts()
+        feedViewModel.loadStories()
     }
 
     override fun onDestroyView() {

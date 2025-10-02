@@ -1,11 +1,14 @@
-﻿package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui.chat
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.campusvibe.R
+import com.bumptech.glide.Glide
+import com.example.campusvibe.databinding.ItemMessageBinding
+import com.example.campusvibe.databinding.ItemMessageSentBinding
 import com.example.campusvibe.model.Message
 import com.google.firebase.auth.FirebaseAuth
 
@@ -13,7 +16,6 @@ private const val VIEW_TYPE_SENT = 1
 private const val VIEW_TYPE_RECEIVED = 2
 
 class MessageAdapter(private val messages: List<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
     override fun getItemViewType(position: Int): Int {
@@ -50,17 +52,51 @@ class MessageAdapter(private val messages: List<Message>) : RecyclerView.Adapter
 
     inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageText: TextView = itemView.findViewById(R.id.message_text_view)
+        private val messageImage: ImageView? = itemView.findViewById(R.id.message_image_view)
 
         fun bind(message: Message) {
-            messageText.text = message.text
+            if (message.text.isNotEmpty()) {
+                messageText.text = message.text
+                messageText.visibility = View.VISIBLE
+            } else {
+                messageText.visibility = View.GONE
+            }
+
+            if (!message.mediaUrl.isNullOrEmpty()) {
+                messageImage?.let { imageView ->
+                    imageView.visibility = View.VISIBLE
+                    Glide.with(itemView.context)
+                        .load(message.mediaUrl)
+                        .into(imageView)
+                }
+            } else {
+                messageImage?.visibility = View.GONE
+            }
         }
     }
 
     inner class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageText: TextView = itemView.findViewById(R.id.text_view_message)
+        private val messageImage: ImageView? = itemView.findViewById(R.id.message_image_view)
 
         fun bind(message: Message) {
-            messageText.text = message.text
+            if (message.text.isNotEmpty()) {
+                messageText.text = message.text
+                messageText.visibility = View.VISIBLE
+            } else {
+                messageText.visibility = View.GONE
+            }
+
+            if (!message.mediaUrl.isNullOrEmpty()) {
+                messageImage?.let { imageView ->
+                    imageView.visibility = View.VISIBLE
+                    Glide.with(itemView.context)
+                        .load(message.mediaUrl)
+                        .into(imageView)
+                }
+            } else {
+                messageImage?.visibility = View.GONE
+            }
         }
     }
 }

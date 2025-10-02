@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.search
+package com.example.campusvibe.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.example.campusvibe.databinding.ItemPostGridBinding
 import com.example.campusvibe.model.Post
 
-class PostGridAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostGridAdapter.PostViewHolder>() {
+class PostGridAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostGridAdapter.PostViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,6 +20,11 @@ class PostGridAdapter(private val posts: List<Post>) : RecyclerView.Adapter<Post
     }
 
     override fun getItemCount() = posts.size
+
+    fun updatePosts(newPosts: List<Post>) {
+        posts = newPosts
+        notifyDataSetChanged()
+    }
 
     inner class PostViewHolder(private val binding: ItemPostGridBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {

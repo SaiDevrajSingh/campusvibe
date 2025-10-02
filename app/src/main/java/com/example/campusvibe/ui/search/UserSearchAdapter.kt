@@ -1,0 +1,44 @@
+package com.example.campusvibe.ui.search
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.campusvibe.databinding.ItemUserSearchBinding
+import com.example.campusvibe.model.User
+
+class UserSearchAdapter(
+    private var users: List<User>,
+    private val onUserClick: (User) -> Unit
+) : RecyclerView.Adapter<UserSearchAdapter.UserViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        val binding = ItemUserSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return UserViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+        holder.bind(users[position])
+    }
+
+    override fun getItemCount() = users.size
+
+    fun updateUsers(newUsers: List<User>) {
+        users = newUsers
+        notifyDataSetChanged()
+    }
+
+    inner class UserViewHolder(private val binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(user: User) {
+            binding.usernameTextView.text = user.username
+            binding.fullNameTextView.text = user.fullName
+            Glide.with(itemView.context)
+                .load(user.profileImageUrl ?: "https://via.placeholder.com/150")
+                .circleCrop()
+                .into(binding.profileImageView)
+
+            itemView.setOnClickListener { onUserClick(user) }
+        }
+    }
+}

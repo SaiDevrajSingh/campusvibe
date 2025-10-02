@@ -1,13 +1,35 @@
-﻿package com.example.campusvibe.data
+package com.example.campusvibe.data
 
+import com.example.campusvibe.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository {
 
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun signUp(email: String, password: String) = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+    suspend fun signUp(email: String, password: String, username: String, fullName: String) {
+        // Create Firebase Auth user
+        val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+        val userId = authResult.user?.uid ?: throw Exception("User creation failed")
+
+        // Create user profile in Firestore
+        val user = User(
+            id = userId,
+            email = email,
+            username = username,
+            fullName = fullName,
+            profileImageUrl = "", // Will be set later in profile editing
+            bio = "",
+            followers = emptyList(),
+            following = emptyList(),
+            postsCount = 0
+        )
+
+        firestore.collection("users").document(userId).set(user).await()
+    }
 
     suspend fun login(email: String, password: String) = firebaseAuth.signInWithEmailAndPassword(email, password).await()
 

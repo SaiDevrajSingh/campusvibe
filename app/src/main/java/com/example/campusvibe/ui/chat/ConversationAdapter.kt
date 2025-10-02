@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui.chat
 
 import android.view.LayoutInflater
 import android.view.View
@@ -42,11 +42,25 @@ class ConversationAdapter(
         private val profileImage: CircleImageView = itemView.findViewById(R.id.image_view_profile)
 
         fun bind(conversation: Conversation) {
-            val otherUserId = conversation.participants.firstOrNull { it != FirebaseAuth.getInstance().currentUser?.uid } ?: ""
-            conversationName.text = otherUserId
-            lastMessage.text = conversation.lastMessage?.text
-            // In a real app, you would fetch the user's details (name and profile picture) using the otherUserId
-            // For now, we're just displaying the user ID and a placeholder image
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            val otherParticipants = conversation.participants.filter { it != currentUserId }
+
+            when {
+                otherParticipants.size == 1 -> {
+                    // 1-on-1 conversation
+                    val otherUserId = otherParticipants.first()
+                    conversationName.text = "User $otherUserId" // TODO: Fetch actual username
+                }
+                otherParticipants.size > 1 -> {
+                    // Group chat
+                    conversationName.text = conversation.groupName ?: "Group (${otherParticipants.size} members)"
+                }
+                else -> {
+                    conversationName.text = "Unknown Conversation"
+                }
+            }
+
+            lastMessage.text = conversation.lastMessage?.text ?: "No messages yet"
             Glide.with(itemView.context).load(R.drawable.ic_profile).into(profileImage)
             itemView.setOnClickListener {
                 onConversationClicked(conversation)

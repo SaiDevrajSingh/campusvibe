@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.create
+package com.example.campusvibe.ui.create
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -34,10 +34,4 @@ class CreateViewModelFactory(private val repository: StorageRepository) : ViewMo
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-}
-
-sealed class UploadStatus {
-    object Loading : UploadStatus()
-    object Success : UploadStatus()
-    data class Error(val message: String) : UploadStatus()
 }

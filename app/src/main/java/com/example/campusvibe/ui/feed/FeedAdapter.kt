@@ -58,7 +58,7 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
                 }
             }
 
-            val likesCount = post.likes
+            val likesCount = post.likedBy.size
             binding.likesCountTextView.text = "$likesCount likes"
 
             val currentUser = auth.currentUser
@@ -67,13 +67,15 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
                 if (isLiked) R.drawable.ic_liked else R.drawable.ic_likes
             )
 
-            binding.likeButton.setOnClickListener {
-                val currentIsLiked = currentUser != null && post.likedBy.contains(currentUser.uid)
-                coroutineScope.launch {
-                    withContext(Dispatchers.IO) {
-                        feedRepository.likePost(post.id, !currentIsLiked)
-                    }
-                }
+            binding.commentButton.setOnClickListener {
+                // TODO: Open comments screen for this post
+                // For now, show a message
+                android.widget.Toast.makeText(itemView.context, "Comments feature coming soon!", android.widget.Toast.LENGTH_SHORT).show()
+            }
+
+            binding.shareButton.setOnClickListener {
+                // TODO: Implement share functionality
+                android.widget.Toast.makeText(itemView.context, "Share feature coming soon!", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }

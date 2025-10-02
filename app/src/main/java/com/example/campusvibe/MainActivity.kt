@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
             if (item.itemId == R.id.nav_add) {
                 AddContentBottomSheetFragment().show(supportFragmentManager, "add_content_sheet")
-                return@setOnNavigationItemSelectedListener false // Don't select the item
+                return@setOnItemSelectedListener false // Don't select the item
             }
 
             var selectedFragment: Fragment? = null

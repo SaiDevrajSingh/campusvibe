@@ -1,11 +1,12 @@
-﻿package com.example.campusvibe.model
+package com.example.campusvibe.model
 
-import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
 data class Message(
-    val id: String = "",
+    var id: String = "",
     val senderId: String = "",
     val text: String = "",
-    @ServerTimestamp val timestamp: Date? = null
+    val mediaUrl: String? = null,
+    val mediaType: String? = null, // "image" or "video"
+    val timestamp: Long = 0
 )

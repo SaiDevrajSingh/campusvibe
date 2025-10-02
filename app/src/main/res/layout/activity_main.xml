@@ -28,14 +28,6 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/action_chat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_chat" />
-
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>

@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.repository
+package com.example.campusvibe.repository
 
 import com.example.campusvibe.model.Conversation
 import com.google.firebase.auth.FirebaseAuth
@@ -31,7 +31,14 @@ class ConversationsRepository {
                 val conversations = snapshot?.toObjects(Conversation::class.java) ?: emptyList()
                 trySend(conversations)
             }
-        awaitClose { listener.remove() }
+    suspend fun createGroupConversation(participants: List<String>, groupName: String? = null): String {
+        val conversation = hashMapOf(
+            "participants" to participants,
+            "timestamp" to System.currentTimeMillis(),
+            "isGroup" to true,
+            "groupName" to (groupName ?: "Group Chat")
+        )
+        val docRef = firestore.collection("conversations").add(conversation).await()
+        return docRef.id
     }
-}
 

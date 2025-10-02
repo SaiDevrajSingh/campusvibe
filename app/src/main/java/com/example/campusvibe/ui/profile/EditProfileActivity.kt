@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.example.campusvibe.databinding.ActivityEditProfileBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +45,8 @@ class EditProfileActivity : AppCompatActivity() {
             cropImage.launch(
                 options {
                     setAspectRatio(1, 1)
+                    setShowCropOverlay(true)
+                    setGuidelines(CropImageView.Guidelines.ON)
                 }
             )
         }
@@ -76,7 +79,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         user?.let {
             val userProfile = hashMapOf<String, Any>(
-                "name" to binding.fullnameEditText.text.toString(),
+                "fullName" to binding.fullnameEditText.text.toString(),
                 "username" to binding.usernameEditText.text.toString(),
                 "bio" to binding.bioEditText.text.toString()
             )

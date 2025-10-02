@@ -37,7 +37,7 @@
 
         <activity android:name="com.example.campusvibe.ui.profile.EditProfileActivity" />
         <activity android:name="com.example.campusvibe.ui.chat.ChatActivity" />
-        <activity android:name="com.example.campus.ui.chat.ConversationsActivity" />
+        <activity android:name="com.example.campusvibe.ui.chat.ConversationsActivity" />
 
         <service
             android:name="com.example.campusvibe.services.MyFirebaseMessagingService"

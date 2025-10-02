@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.data
+package com.example.campusvibe.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,10 +21,10 @@ class AuthViewModel : ViewModel() {
         _user.value = authRepository.getCurrentUser()
     }
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, username: String, fullName: String) {
         viewModelScope.launch {
             try {
-                authRepository.signUp(email, password)
+                authRepository.signUp(email, password, username, fullName)
                 _user.value = authRepository.getCurrentUser()
                 _authState.value = AuthState.SUCCESS
             } catch (e: Exception) {

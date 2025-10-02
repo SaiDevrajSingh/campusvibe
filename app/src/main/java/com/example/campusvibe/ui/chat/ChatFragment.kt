@@ -1,9 +1,12 @@
-﻿package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui.chat
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,14 @@ class ChatFragment : Fragment() {
         ChatViewModelFactory(arguments?.getString("conversationId") ?: "")
     }
     private lateinit var messageAdapter: MessageAdapter
+
+    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { sendMediaMessage(it, "image") }
+    }
+
+    private val selectVideoLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { sendMediaMessage(it, "video") }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +50,10 @@ class ChatFragment : Fragment() {
             binding.recyclerViewMessages.adapter = messageAdapter
         }
 
+        binding.buttonAttachMedia.setOnClickListener {
+            showMediaOptions()
+        }
+
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotBlank()) {
@@ -49,9 +64,26 @@ class ChatFragment : Fragment() {
         }
     }
 
+    private fun showMediaOptions() {
+        val options = arrayOf("Take Photo", "Choose from Gallery", "Send Video")
+        AlertDialog.Builder(requireContext())
+            .setTitle("Attach Media")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> selectImageLauncher.launch("image/*")
+                    1 -> selectImageLauncher.launch("image/*")
+                    2 -> selectVideoLauncher.launch("video/*")
+                }
+            }
+            .show()
+    }
+
+    private fun sendMediaMessage(mediaUri: Uri, mediaType: String) {
+        viewModel.sendMediaMessage(mediaUri, mediaType)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
-

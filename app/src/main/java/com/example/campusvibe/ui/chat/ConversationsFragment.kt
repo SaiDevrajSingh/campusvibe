@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui.chat
 
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +35,13 @@ class ConversationsFragment : Fragment() {
 
         viewModel.conversations.observe(viewLifecycleOwner) { conversations ->
             adapter.updateConversations(conversations)
+        }
+
+        binding.fabCreateGroup.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CreateGroupChatFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         return binding.root

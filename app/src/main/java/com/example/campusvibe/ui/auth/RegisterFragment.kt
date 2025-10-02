@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.auth
+package com.example.campusvibe.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,7 +42,14 @@ class RegisterFragment : Fragment() {
         binding.registerButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
-            viewModel.signUp(email, password)
+            val username = binding.usernameEditText.text.toString()
+            val fullName = binding.fullNameEditText.text.toString()
+
+            if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank() && fullName.isNotBlank()) {
+                viewModel.signUp(email, password, username, fullName)
+            } else {
+                Snackbar.make(binding.root, "Please fill all fields", Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         binding.backToLoginButton.setOnClickListener {
