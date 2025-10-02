@@ -53,7 +53,7 @@
     <TextView
         android:id="@+id/likesCountTextView"
         android:layout_width="wrap_content"
-        android.layout_height="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/commentButton"
@@ -63,7 +63,7 @@
     <ImageButton
         android:id="@+id/commentButton"
         android:layout_width="wrap_content"
-        android.layout_height="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_comment"
@@ -73,7 +73,7 @@
     <TextView
         android:id="@+id/commentsCountTextView"
         android:layout_width="wrap_content"
-        android.layout_height="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/shareButton"

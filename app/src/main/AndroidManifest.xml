@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:name=".CampusVibeApplication"
@@ -28,8 +29,11 @@
         </activity>
 
         <activity
-            android:name=".ui.story.StoryViewerActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:name=".ui.story.StoryViewActivity"
+            />
+        <activity
+            android:name=".ui.story.AddStoryActivity"
+            />
 
         <activity android:name=".ui.profile.EditProfileActivity" />
         <activity android:name=".ui.chat.ChatActivity" />

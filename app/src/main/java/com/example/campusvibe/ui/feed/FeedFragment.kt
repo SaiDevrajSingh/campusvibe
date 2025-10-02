@@ -1,24 +1,27 @@
-﻿package com.example.campusvibe.ui.feed
+package com.example.campusvibe.ui.feed
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentFeedBinding
-import com.example.campusvibe.model.Post
+import com.example.campusvibe.ui.story.AddStoryActivity
+import com.example.campusvibe.ui.story.StoryViewActivity
 
 class FeedFragment : Fragment() {
 
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
 
+    private val feedViewModel: FeedViewModel by viewModels()
     private lateinit var feedAdapter: FeedAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
@@ -28,49 +31,35 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val posts = createDummyPosts()
         feedAdapter = FeedAdapter()
-        feedAdapter.submitList(posts)
 
         binding.postsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = feedAdapter
         }
-    }
 
-    private fun createDummyPosts(): MutableList<Post> {
-        return mutableListOf(
-            Post(
-                id = "1",
-                userId = "user1",
-                username = "user1",
-                imageUrl = "https://picsum.photos/400",
-                caption = "This is a great photo!",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 60 * 2,
-                likes = 10,
-                isLiked = false
-            ),
-            Post(
-                id = "2",
-                userId = "user2",
-                username = "user2",
-                imageUrl = "https://picsum.photos/401",
-                caption = "Having fun!",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 60 * 24,
-                likes = 25,
-                isLiked = true
-            ),
-            Post(
-                id = "3",
-                userId = "user3",
-                username = "user3",
-                imageUrl = "https://picsum.photos/402",
-                caption = "Beautiful scenery.",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 60 * 48,
-                likes = 50,
-                isLiked = false
-            )
-        )
+        feedViewModel.posts.observe(viewLifecycleOwner) {
+            feedAdapter.submitList(it)
+            binding.emptyTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            binding.errorTextView.visibility = View.GONE
+        }
+
+        feedViewModel.showError.observe(viewLifecycleOwner) {
+            binding.errorTextView.visibility = View.VISIBLE
+            binding.emptyTextView.visibility = View.GONE
+            binding.postsRecyclerView.visibility = View.GONE
+        }
+
+        binding.addStoryButton.setOnClickListener {
+            val intent = Intent(requireContext(), AddStoryActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            feedViewModel.loadPosts()
+        }
+
+        feedViewModel.loadPosts()
     }
 
     override fun onDestroyView() {
@@ -78,5 +67,3 @@ class FeedFragment : Fragment() {
         _binding = null
     }
 }
-
-

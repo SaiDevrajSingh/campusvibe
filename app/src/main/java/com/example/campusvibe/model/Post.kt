@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.model
+package com.example.campusvibe.model
 
 import com.google.firebase.firestore.PropertyName
 
@@ -10,6 +10,5 @@ data class Post(
     var caption: String = "",
     var timestamp: Long = 0,
     var likes: Int = 0,
-    var isLiked: Boolean = false
+    @get:PropertyName("liked_by") @set:PropertyName("liked_by") var likedBy: List<String> = emptyList()
 )
-
