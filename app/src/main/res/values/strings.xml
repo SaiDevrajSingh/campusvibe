@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">CampusVibe</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_messages">Messages</string>
+    <string name="title_profile">Profile</string>
+    <string name="username">Username</string>
+    <string name="user_profile_image">User profile image</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="followers_count">%d Followers</string>
+    <string name="following_count">%d Following</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+
+    <!-- Newly added strings -->
+    <string name="add_post">Add Post</string>
+    <string name="caption">Caption</string>
+    <string name="no_posts_available">No posts available</string>
+    <string name="error_loading_posts">Error loading posts</string>
+    <string name="no_liked_posts">No liked posts yet</string>
+    <string name="post_image">Post image</string>
+    <string name="likes">%d likes</string>
+</resources>
