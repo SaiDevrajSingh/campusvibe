@@ -9,7 +9,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
-        android:name=".CampusVibeApplication"
+        android:name="com.example.campusvibe.CampusVibeApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusVibe">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.campusvibe.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,18 +29,18 @@
         </activity>
 
         <activity
-            android:name=".ui.story.StoryViewActivity"
+            android:name="com.example.campusvibe.ui.story.StoryViewActivity"
             />
         <activity
-            android:name=".ui.story.AddStoryActivity"
+            android:name="com.example.campusvibe.ui.story.AddStoryActivity"
             />
 
-        <activity android:name=".ui.profile.EditProfileActivity" />
-        <activity android:name=".ui.chat.ChatActivity" />
-        <activity android:name=".ui.chat.ConversationsActivity" />
+        <activity android:name="com.example.campusvibe.ui.profile.EditProfileActivity" />
+        <activity android:name="com.example.campusvibe.ui.chat.ChatActivity" />
+        <activity android:name="com.example.campus.ui.chat.ConversationsActivity" />
 
         <service
-            android:name=".services.MyFirebaseMessagingService"
+            android:name="com.example.campusvibe.services.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

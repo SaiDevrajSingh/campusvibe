@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.profile
+package com.example.campusvibe.ui.profile
 
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +9,7 @@ import com.canhub.cropper.options
 import com.example.campusvibe.databinding.ActivityEditProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 
 class EditProfileActivity : AppCompatActivity() {
@@ -84,7 +85,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             db.collection("users").document(it.uid)
-                .update(userProfile)
+                .set(userProfile, SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d("EditProfileActivity", "User profile update successful")
                     finish()
@@ -95,5 +96,3 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 }
-
-
