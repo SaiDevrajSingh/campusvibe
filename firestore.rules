@@ -1,41 +1,80 @@
+rules_version = '2';
+
 service cloud.firestore {
-   match /databases/{database}/documents {
-     match /stories/{story} {
-        function isSignedIn() {
-          return request.auth != null;
-        }
+  match /databases/{database}/documents {
 
-        function getRole(rsc) {
-          return rsc.data.roles[request.auth.uid];
-        }
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
 
-        function isOneOfRoles(rsc, array) {
-          return isSignedIn() && (getRole(rsc) in array);
-        }
+    // Rules for the 'users' collection
+    match /users/{userId} {
+      // Anyone can read a user's profile
+      allow read: if true;
 
-        function isValidNewStory() {
-          return request.resource.data.roles[request.auth.uid] == 'owner';
-        }
+      // Only the authenticated user can create, update, or delete their own profile
+      allow create, update, delete: if isSignedIn() && request.auth.uid == userId;
+    }
 
-        allow create: if isValidNewStory();
-        allow update: if isOneOfRoles(resource, ['owner', 'writer']);
-        allow delete: if isOneOfRoles(resource, ['owner']);
-        allow read: if isOneOfRoles(resource, ['owner', 'writer', 'commenter', 'reader']);
+    // Rules for the 'posts' collection
+    match /posts/{postId} {
+      // Anyone can read a post
+      allow read: if true;
 
-        match /comments/{comment} {
-          allow read: if isOneOfRoles(get(/databases/$(database)/documents/stories/$(story)),
-                                      ['owner', 'writer', 'commenter', 'reader']);
+      // Only authenticated users can create new posts
+      allow create: if isSignedIn();
 
-          // Owners, writers, and commenters can create comments. The
-          // user id in the comment document must match the requesting
-          // user's id.
-          //
-          // Note: we have to use get() here to retrieve the story
-          // document so that we can check the user's role.
-          allow create: if isOneOfRoles(get(/databases/$(database)/documents/stories/$(story)),
-                                        ['owner', 'writer', 'commenter'])
-                        && request.resource.data.user == request.auth.uid;
-        }
-     }
-   }
+      // Only the author of a post can update or delete it
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Rules for 'likes' subcollection in a post
+      match /likes/{userId} {
+        // Anyone can read who liked a post
+        allow read: if true;
+
+        // Only authenticated users can like or unlike a post
+        allow create, delete: if isSignedIn() && request.auth.uid == userId;
+      }
+
+      // Rules for 'comments' subcollection in a post
+      match /comments/{commentId} {
+        // Anyone can read comments
+        allow read: if true;
+
+        // Only authenticated users can add or delete comments
+        allow create, delete: if isSignedIn();
+      }
+    }
+
+    // Rules for the 'stories' collection
+    match /stories/{storyId} {
+      // Anyone can read a story
+      allow read: if true;
+
+      // Only authenticated users can create stories
+      allow create: if isSignedIn();
+
+      // Only the author of a story can delete it
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Rules for the 'reels' collection
+    match /reels/{reelId} {
+      // Anyone can read a reel
+      allow read: if true;
+
+      // Only authenticated users can create reels
+      allow create: if isSignedIn();
+
+      // Only the author of a reel can delete it
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Rules for the 'notifications' collection
+    match /notifications/{notificationId} {
+      // Users can only read, create, or delete their own notifications
+      allow read, create, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
 }
