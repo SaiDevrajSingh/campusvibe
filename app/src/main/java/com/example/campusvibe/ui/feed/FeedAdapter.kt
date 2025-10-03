@@ -4,19 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.campusvibe.R
-import com.example.campusvibe.data.FeedRepository
-import com.example.campusvibe.data.UserRepository
-import com.example.campusvibe.databinding.ItemFeedPostBinding
-import com.example.campusvibe.model.Post
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import android.content.Intent
 
 class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallback()) {
 
@@ -68,14 +56,21 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
             )
 
             binding.commentButton.setOnClickListener {
-                // TODO: Open comments screen for this post
-                // For now, show a message
-                android.widget.Toast.makeText(itemView.context, "Comments feature coming soon!", android.widget.Toast.LENGTH_SHORT).show()
+                // Navigate to comments screen for this post
+                val intent = Intent(itemView.context, CommentsActivity::class.java)
+                intent.putExtra("postId", post.id)
+                intent.putExtra("postImageUrl", post.imageUrl)
+                intent.putExtra("postCaption", post.caption)
+                itemView.context.startActivity(intent)
             }
 
             binding.shareButton.setOnClickListener {
-                // TODO: Implement share functionality
-                android.widget.Toast.makeText(itemView.context, "Share feature coming soon!", android.widget.Toast.LENGTH_SHORT).show()
+                // Share post functionality
+                val shareText = "Check out this post: ${post.caption}\n\nShared from CampusVibe"
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+                itemView.context.startActivity(Intent.createChooser(shareIntent, "Share post"))
             }
         }
     }

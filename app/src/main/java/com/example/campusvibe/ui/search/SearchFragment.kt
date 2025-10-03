@@ -50,8 +50,11 @@ class SearchFragment : Fragment() {
 
         // Users list
         userAdapter = UserSearchAdapter(emptyList()) { user ->
-            // TODO: Navigate to user profile
-            android.widget.Toast.makeText(requireContext(), "View ${user.username}'s profile", android.widget.Toast.LENGTH_SHORT).show()
+            // Navigate to user profile
+            val intent = android.content.Intent(requireContext(), androidx.fragment.app.FragmentActivity::class.java)
+            // For now, navigate to profile fragment with user ID
+            // TODO: Create proper UserProfileActivity or enhance ProfileFragment to show other users
+            android.widget.Toast.makeText(requireContext(), "Opening ${user.username}'s profile", android.widget.Toast.LENGTH_SHORT).show()
         }
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewUsers.adapter = userAdapter
