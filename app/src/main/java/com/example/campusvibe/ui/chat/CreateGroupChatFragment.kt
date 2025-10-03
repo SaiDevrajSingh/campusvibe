@@ -1,13 +1,18 @@
 package com.example.campusvibe.ui.chat
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentCreateGroupChatBinding
 import com.example.campusvibe.model.User
+import com.example.campusvibe.ui.chat.adapter.SelectedUsersAdapter
+import com.example.campusvibe.ui.chat.adapter.UserSearchAdapter
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 
 class CreateGroupChatFragment : Fragment() {
@@ -25,6 +30,7 @@ class CreateGroupChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCreateGroupChatBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,10 +120,12 @@ class CreateGroupChatFragment : Fragment() {
                 setOnCloseIconClickListener {
                     selectedUsers.remove(user)
                     selectedUsersAdapter.updateUsers(selectedUsers)
+                    updateSelectedUsersChips()
                 }
             }
             binding.chipGroupSelectedUsers.addView(chip)
         }
+    }
 
     private fun createGroupChat(groupName: String) {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return

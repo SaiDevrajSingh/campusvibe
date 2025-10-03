@@ -12,12 +12,7 @@ import com.example.campusvibe.data.FeedRepository
 import com.example.campusvibe.data.UserRepository
 import com.example.campusvibe.databinding.ItemFeedPostBinding
 import com.example.campusvibe.model.Post
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.campusvibe.ui.comments.CommentsActivity
 
 class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallback()) {
 

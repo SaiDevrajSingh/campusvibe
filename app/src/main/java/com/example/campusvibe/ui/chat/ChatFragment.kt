@@ -57,8 +57,7 @@ class ChatFragment : Fragment() {
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotBlank()) {
-                val senderId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                viewModel.sendMessage(messageText, senderId)
+                viewModel.sendMessage(messageText)
                 binding.editTextMessage.text.clear()
             }
         }

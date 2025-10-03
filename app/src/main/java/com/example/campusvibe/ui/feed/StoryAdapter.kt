@@ -49,8 +49,8 @@ class StoryAdapter(private val onStoryClick: (Story) -> Unit) :
                 else -> 2
             }
             binding.storyImageView.borderColor = when {
-                story.isPlaceholder -> R.color.colorPrimary
-                else -> R.color.colorAccent
+                story.isPlaceholder -> android.graphics.Color.BLUE
+                else -> android.graphics.Color.GRAY
             }
 
             itemView.setOnClickListener { onStoryClick(story) }

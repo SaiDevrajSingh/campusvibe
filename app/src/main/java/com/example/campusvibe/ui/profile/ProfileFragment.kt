@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -62,30 +64,32 @@ class ProfileFragment : Fragment() {
     }
 
     private fun displayUserProfile(user: User) {
-        binding.usernameTextView.text = user.username
-        binding.fullNameTextView.text = user.fullName
-        binding.bioTextView.text = user.bio ?: "No bio yet"
-        binding.followersCountTextView.text = "${user.followers.size} followers"
-        binding.followingCountTextView.text = "${user.following.size} following"
-        binding.postsCountTextView.text = "${user.postsCount} posts"
+        // The layout uses different IDs, so we need to find views by ID
+        val fullnameTextView = view?.findViewById<TextView>(R.id.fullname)
+        val bioTextView = view?.findViewById<TextView>(R.id.bio)
+        val postsCountTextView = view?.findViewById<TextView>(R.id.posts_count)
+        val followersCountTextView = view?.findViewById<TextView>(R.id.followers_count)
+        val followingCountTextView = view?.findViewById<TextView>(R.id.following_count)
+        val profileImageView = view?.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
 
-        Glide.with(this)
-            .load(user.profileImageUrl ?: R.drawable.ic_profile)
-            .circleCrop()
-            .into(binding.profileImageView)
+        fullnameTextView?.text = user.fullName
+        bioTextView?.text = user.bio ?: "No bio yet"
+        postsCountTextView?.text = user.postsCount.toString()
+        followersCountTextView?.text = user.followers.size.toString()
+        followingCountTextView?.text = user.following.size.toString()
+
+        profileImageView?.let { imageView ->
+            Glide.with(this)
+                .load(user.profileImageUrl ?: R.drawable.ic_profile)
+                .circleCrop()
+                .into(imageView)
+        }
     }
 
     private fun setupClickListeners() {
-        binding.editProfileButton.setOnClickListener {
+        val editProfileButton = view?.findViewById<Button>(R.id.edit_profile_button)
+        editProfileButton?.setOnClickListener {
             startActivity(Intent(context, EditProfileActivity::class.java))
-        }
-
-        binding.followersLayout.setOnClickListener {
-            // TODO: Navigate to followers list
-        }
-
-        binding.followingLayout.setOnClickListener {
-            // TODO: Navigate to following list
         }
     }
 
