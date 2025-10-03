@@ -17,7 +17,7 @@ class ConversationsRepository {
     fun getConversations(): Flow<List<Conversation>> = callbackFlow {
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            close(IllegalStateException("User not logged in"))
+            close() // Close the flow if user is not logged in
             return@callbackFlow
         }
 
@@ -27,7 +27,7 @@ class ConversationsRepository {
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     close(e)
-                    return@addSnapshotListener
+                    return@addSnapshot-listener
                 }
                 val conversations = snapshot?.toObjects(Conversation::class.java) ?: emptyList()
                 trySend(conversations)
@@ -46,4 +46,3 @@ class ConversationsRepository {
         return docRef.id
     }
 }
-
