@@ -31,11 +31,9 @@ class ChatViewModel(private val conversationId: String) : ViewModel() {
         }
     }
 
-    fun sendMessage(text: String) {
+    fun sendMediaMessage(mediaUri: Uri, mediaType: String) {
         val senderId = auth.currentUser?.uid ?: return
         viewModelScope.launch {
-            repository.sendMessage(conversationId, text)
+            repository.sendMediaMessage(conversationId, mediaUri, mediaType, senderId)
         }
     }
-}
-
