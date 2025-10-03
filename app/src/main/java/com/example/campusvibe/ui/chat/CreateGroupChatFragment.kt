@@ -8,10 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentCreateGroupChatBinding
 import com.example.campusvibe.model.User
-import com.example.campusvibe.ui.chat.adapter.SelectedUsersAdapter
-import com.example.campusvibe.ui.chat.adapter.UserSearchAdapter
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.FirebaseAuth
 
 class CreateGroupChatFragment : Fragment() {
 
@@ -28,7 +25,6 @@ class CreateGroupChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCreateGroupChatBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,8 +34,21 @@ class CreateGroupChatFragment : Fragment() {
         setupSearch()
         setupCreateButton()
 
-        viewModel.users.observe(viewLifecycleOwner) { users ->
-            userAdapter.updateUsers(users)
+        // Observe group creation status
+        viewModel.groupCreationStatus.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                is GroupCreationStatus.Success -> {
+                    android.widget.Toast.makeText(requireContext(), "Group created successfully!", android.widget.Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                }
+                is GroupCreationStatus.Error -> {
+                    android.widget.Toast.makeText(requireContext(), status.message, android.widget.Toast.LENGTH_SHORT).show()
+                }
+                GroupCreationStatus.Loading -> {
+                    binding.buttonCreateGroup.isEnabled = false
+                    binding.buttonCreateGroup.text = "Creating..."
+                }
+            }
         }
     }
 
@@ -111,26 +120,10 @@ class CreateGroupChatFragment : Fragment() {
         }
 
     private fun createGroupChat(groupName: String) {
-        val currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val participantIds = selectedUsers.map { it.id } + currentUserId
 
         viewModel.createGroupChat(participantIds, groupName)
-
-        viewModel.groupCreationStatus.observe(viewLifecycleOwner) { status ->
-            when (status) {
-                is GroupCreationStatus.Success -> {
-                    android.widget.Toast.makeText(requireContext(), "Group created successfully!", android.widget.Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack()
-                }
-                is GroupCreationStatus.Error -> {
-                    android.widget.Toast.makeText(requireContext(), status.message, android.widget.Toast.LENGTH_SHORT).show()
-                }
-                GroupCreationStatus.Loading -> {
-                    binding.buttonCreateGroup.isEnabled = false
-                    binding.buttonCreateGroup.text = "Creating..."
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {

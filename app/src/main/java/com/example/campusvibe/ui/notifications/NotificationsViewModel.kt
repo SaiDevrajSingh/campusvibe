@@ -15,9 +15,6 @@ class NotificationsViewModel : ViewModel() {
     private val _notifications = MutableLiveData<List<Notification>>()
     val notifications: LiveData<List<Notification>> = _notifications
 
-    private val _unreadCount = MutableLiveData<Int>()
-    val unreadCount: LiveData<Int> = _unreadCount
-
     init {
         loadNotifications()
     }
@@ -27,24 +24,6 @@ class NotificationsViewModel : ViewModel() {
             repository.getNotifications().collect { notifications ->
                 _notifications.value = notifications
             }
-        }
-    }
-
-    fun markNotificationAsRead(notificationId: String) {
-        viewModelScope.launch {
-            repository.markNotificationAsRead(notificationId)
-        }
-    }
-
-    fun markAllAsRead() {
-        viewModelScope.launch {
-            repository.markAllNotificationsAsRead()
-        }
-    }
-
-    fun refreshUnreadCount() {
-        viewModelScope.launch {
-            _unreadCount.value = repository.getUnreadCount()
         }
     }
 }

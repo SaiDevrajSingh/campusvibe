@@ -7,6 +7,7 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 class ConversationsRepository {
 
@@ -31,6 +32,9 @@ class ConversationsRepository {
                 val conversations = snapshot?.toObjects(Conversation::class.java) ?: emptyList()
                 trySend(conversations)
             }
+        awaitClose { listener.remove() }
+    }
+
     suspend fun createGroupConversation(participants: List<String>, groupName: String? = null): String {
         val conversation = hashMapOf(
             "participants" to participants,
@@ -41,4 +45,5 @@ class ConversationsRepository {
         val docRef = firestore.collection("conversations").add(conversation).await()
         return docRef.id
     }
+}
 

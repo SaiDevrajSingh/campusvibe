@@ -1,7 +1,5 @@
 package com.example.campusvibe.model
 
-import java.util.Date
-
 data class Notification(
     val id: String = "",
     val type: String = "", // "like", "comment", "follow", "mention"

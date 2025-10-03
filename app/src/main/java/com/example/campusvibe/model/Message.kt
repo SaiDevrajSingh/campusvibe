@@ -1,7 +1,5 @@
 package com.example.campusvibe.model
 
-import java.util.Date
-
 data class Message(
     var id: String = "",
     val senderId: String = "",

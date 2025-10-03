@@ -1,10 +1,23 @@
 package com.example.campusvibe.ui.feed
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.campusvibe.R
+import com.example.campusvibe.data.FeedRepository
+import com.example.campusvibe.data.UserRepository
+import com.example.campusvibe.databinding.ItemFeedPostBinding
+import com.example.campusvibe.model.Post
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallback()) {
 
@@ -54,6 +67,15 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
             binding.likeButton.setImageResource(
                 if (isLiked) R.drawable.ic_liked else R.drawable.ic_likes
             )
+
+            binding.likeButton.setOnClickListener {
+                val currentIsLiked = currentUser != null && post.likedBy.contains(currentUser.uid)
+                coroutineScope.launch {
+                    withContext(Dispatchers.IO) {
+                        feedRepository.likePost(post.id, !currentIsLiked)
+                    }
+                }
+            }
 
             binding.commentButton.setOnClickListener {
                 // Navigate to comments screen for this post
