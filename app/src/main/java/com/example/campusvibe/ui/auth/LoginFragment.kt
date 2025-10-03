@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.auth
+package com.example.campusvibe.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
 
         viewModel.user.observe(viewLifecycleOwner) {
             if (it != null) {
-                findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+                findNavController().navigate(R.id.action_login_to_home)
             }
         }
 
@@ -51,11 +51,12 @@ class LoginFragment : Fragment() {
         }
 
         binding.forgotPasswordButton.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+            // TODO: Implement forgot password functionality
+            Snackbar.make(binding.root, "Forgot Password not implemented", Snackbar.LENGTH_SHORT).show()
         }
 
         binding.registerButton.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            findNavController().navigate(R.id.action_login_to_signup)
         }
     }
 
@@ -64,4 +65,3 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 }
-

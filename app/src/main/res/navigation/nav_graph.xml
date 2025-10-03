@@ -5,30 +5,113 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+    <!-- Login & Signup -->
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.campusvibe.ui.auth.LoginFragment"
-        android:label="LoginFragment"
+        android:name="com.example.campusvibe.ui.LoginFragment"
+        android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signupFragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.campusvibe.ui.SignupFragment"
+        android:label="Signup"
+        tools:layout="@layout/fragment_signup"/>
+
+    <!-- Main App Flow -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.campusvibe.ui.home.HomeFragment"
-        android:label="HomeFragment"
+        android:name="com.example.campusvibe.ui.HomeFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_feedFragment"
-            app:destination="@id/feedFragment" />
+            android:id="@+id/action_home_to_postDetail"
+            app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_storyDetail"
+            app:destination="@id/storyDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_chat"
+            app:destination="@id/chatFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/feedFragment"
-        android:name="com.example.campusvibe.ui.feed.FeedFragment"
-        android:label="FeedFragment"
-        tools:layout="@layout/fragment_feed" />
+        android:id="@+id/searchFragment"
+        android:name="com.example.campusvibe.ui.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_search_to_postDetail"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.example.campusvibe.ui.CreatePostFragment"
+        android:label="Create Post"
+        tools:layout="@layout/fragment_create_post" />
+
+    <fragment
+        android:id="@+id/reelsFragment"
+        android:name="com.example.campusvibe.ui.ReelsFragment"
+        android:label="Reels"
+        tools:layout="@layout/fragment_reels">
+        <action
+            android:id="@+id/action_reels_to_postDetail"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.campusvibe.ui.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_postDetail"
+            app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingsFragment"/>
+    </fragment>
+
+    <!-- Detail & Utility Screens -->
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.campusvibe.ui.PostDetailFragment"
+        android:label="Post Detail"
+        tools:layout="@layout/fragment_post_detail" />
+
+    <fragment
+        android:id="@+id/storyDetailFragment"
+        android:name="com.example.campusvibe.ui.StoryDetailFragment"
+        android:label="Story Detail"
+        tools:layout="@layout/fragment_story_detail" />
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.campusvibe.ui.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.example.campusvibe.ui.NotificationFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notification" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.campusvibe.ui.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>

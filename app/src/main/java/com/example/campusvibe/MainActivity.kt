@@ -6,16 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.campusvibe.data.AuthViewModel
 import com.example.campusvibe.databinding.ActivityMainBinding
-import com.example.campusvibe.ui.chat.ConversationsActivity
 import com.example.campusvibe.ui.create.AddContentBottomSheetFragment
-import com.example.campusvibe.ui.home.HomeFragment
-import com.example.campusvibe.ui.notifications.NotificationsFragment
-import com.example.campusvibe.ui.profile.ProfileFragment
-import com.example.campusvibe.ui.search.SearchFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,10 +26,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         authViewModel.user.observe(this) { user ->
+            val navController = findNavController(R.id.nav_host_fragment)
             if (user == null) {
                 // User is not logged in, navigate to the login screen
-                val navController = findNavController(R.id.nav_host_fragment)
-                navController.navigate(R.id.loginFragment)
+                if (navController.currentDestination?.id != R.id.loginFragment) {
+                    navController.navigate(R.id.loginFragment)
+                }
             } else {
                 // User is logged in, set up the main UI
                 setupMainUI()
@@ -43,46 +40,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupMainUI() {
+        val navController = findNavController(R.id.nav_host_fragment)
+
+        // We are not using setupWithNavController because we have a custom item
+        // that doesn't navigate. Instead, we handle item selection manually.
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            if (item.itemId == R.id.nav_add) {
+            if (item.itemId == R.id.createPostFragment) {
                 AddContentBottomSheetFragment().show(supportFragmentManager, "add_content_sheet")
-                return@setOnItemSelectedListener false // Don't select the item
+                false // Return false: don't select the item
+            } else {
+                // For all other items, let NavigationUI handle the navigation
+                NavigationUI.onNavDestinationSelected(item, navController)
             }
-
-            var selectedFragment: Fragment? = null
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    selectedFragment = HomeFragment()
-                    supportActionBar?.title = "CampusVibe"
-                    invalidateOptionsMenu() // Refresh the menu
-                }
-                R.id.nav_search -> {
-                    selectedFragment = SearchFragment()
-                    supportActionBar?.title = "Search"
-                    invalidateOptionsMenu()
-                }
-                R.id.nav_notifications -> {
-                    selectedFragment = NotificationsFragment()
-                    supportActionBar?.title = "Notifications"
-                    invalidateOptionsMenu()
-                }
-                R.id.nav_profile -> {
-                    selectedFragment = ProfileFragment()
-                    supportActionBar?.title = "devrajs"
-                    invalidateOptionsMenu()
-                }
-            }
-
-            if (selectedFragment != null) {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, selectedFragment)
-                    .commit()
-            }
-            true
         }
 
-        if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
-            binding.bottomNavigation.selectedItemId = R.id.nav_home
+        // Keep the BottomNavigationView selection in sync with the NavController
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNavigation.menu.findItem(destination.id)?.isChecked = true
+
+            // Update the toolbar title
+            supportActionBar?.title = when (destination.id) {
+                R.id.homeFragment -> "CampusVibe"
+                R.id.searchFragment -> "Search"
+                R.id.reelsFragment -> "Reels"
+                R.id.profileFragment -> "devrajs"
+                else -> "CampusVibe"
+            }
+            invalidateOptionsMenu() // Refresh the menu
         }
     }
 
@@ -96,7 +80,9 @@ class MainActivity : AppCompatActivity() {
         val profileItem = menu?.findItem(R.id.action_settings)
         val chatItem = menu?.findItem(R.id.action_chat)
 
-        if (binding.bottomNavigation.selectedItemId == R.id.nav_profile) {
+        val currentDestinationId = findNavController(R.id.nav_host_fragment).currentDestination?.id
+
+        if (currentDestinationId == R.id.profileFragment) {
             profileItem?.isVisible = true
             chatItem?.isVisible = false
         } else {
@@ -108,9 +94,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
         return when (item.itemId) {
             R.id.action_chat -> {
-                startActivity(Intent(this, ConversationsActivity::class.java))
+                navController.navigate(R.id.chatFragment)
+                true
+            }
+            R.id.action_settings -> {
+                navController.navigate(R.id.settingsFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
