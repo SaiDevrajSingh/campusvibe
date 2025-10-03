@@ -78,10 +78,9 @@ class ChatRepository {
                     close(e)
                     return@addSnapshotListener
                 }
-                val typingUsers = snapshot?.get("typingUsers") as? List<String> ?: emptyList()
-                trySend(typingUsers)
+                val typingUsers = snapshot?.get("typingUsers") as? List<*> ?: emptyList<String>()
+                trySend(typingUsers.filterIsInstance<String>()) 
             }
         awaitClose { listener.remove() }
     }
 }
-

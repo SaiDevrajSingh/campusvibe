@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.create
+package com.example.campusvibe.ui.create
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,6 +11,9 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import android.os.Build
+import android.graphics.ImageDecoder
+import android.provider.MediaStore
 
 class StorageRepository(private val context: Context) {
 
@@ -29,10 +32,13 @@ class StorageRepository(private val context: Context) {
     }
 
     private fun compressImage(imageUri: Uri): Bitmap {
-        // In a real app, you'd use a library like Glide or Picasso to handle image loading and resizing.
-        // For simplicity, we're skipping actual compression here.
-        // You should implement a proper image compression strategy in a production app.
-        return android.provider.MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val source = ImageDecoder.createSource(context.contentResolver, imageUri)
+            ImageDecoder.decodeBitmap(source)
+        } else {
+            @Suppress("DEPRECATION")
+            MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        }
     }
 
     private suspend fun uploadImageToStorage(imageBitmap: Bitmap): String {
@@ -67,4 +73,3 @@ class StorageRepository(private val context: Context) {
         firestore.collection("posts").document(post.id).set(post).await()
     }
 }
-

@@ -19,6 +19,10 @@ class NotificationsViewModel : ViewModel() {
         loadNotifications()
     }
 
+    fun fetchNotifications() {
+        loadNotifications()
+    }
+
     private fun loadNotifications() {
         viewModelScope.launch {
             repository.getNotifications().collect { notifications ->
@@ -27,5 +31,3 @@ class NotificationsViewModel : ViewModel() {
         }
     }
 }
-
-

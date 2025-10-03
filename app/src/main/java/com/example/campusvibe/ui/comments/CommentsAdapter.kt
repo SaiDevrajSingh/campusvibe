@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campusvibe.databinding.ItemCommentBinding
+import com.example.campusvibe.model.Comment
 
 class CommentsAdapter(private var comments: List<Comment>) : RecyclerView.Adapter<CommentViewHolder>() {
 
@@ -16,11 +17,12 @@ class CommentsAdapter(private var comments: List<Comment>) : RecyclerView.Adapte
         holder.bind(comments[position])
     }
 
-    override fun getItemCount() = comments.size
+    override fun getItemCount(): Int {
+        return comments.size
+    }
 
     fun updateComments(newComments: List<Comment>) {
         comments = newComments
         notifyDataSetChanged()
     }
 }
-

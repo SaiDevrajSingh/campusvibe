@@ -28,12 +28,10 @@ class ProfilePostAdapter(private var posts: List<String>, private val onPostClic
     inner class PostViewHolder(private val binding: ItemPostGridBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: String) {
             Glide.with(itemView.context)
-                .load("https://picsum.photos/200/300?random=$adapterPosition")
+                .load("https://picsum.photos/200/300?random=$bindingAdapterPosition")
                 .into(binding.imageViewPost)
 
             itemView.setOnClickListener { onPostClick(post) }
         }
     }
 }
-
-

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentCommentsBinding
+import com.example.campusvibe.model.Comment
 
 class CommentsFragment : Fragment() {
 
@@ -52,4 +53,3 @@ class CommentsFragment : Fragment() {
         _binding = null
     }
 }
-

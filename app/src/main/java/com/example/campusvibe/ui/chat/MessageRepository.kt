@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui.chat
 
 import com.example.campusvibe.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,4 +28,3 @@ class MessageRepository {
             .add(message)
     }
 }
-

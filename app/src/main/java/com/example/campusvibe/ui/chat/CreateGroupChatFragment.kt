@@ -40,6 +40,10 @@ class CreateGroupChatFragment : Fragment() {
         setupSearch()
         setupCreateButton()
 
+        viewModel.users.observe(viewLifecycleOwner) { users ->
+            userAdapter.updateUsers(users)
+        }
+
         // Observe group creation status
         viewModel.groupCreationStatus.observe(viewLifecycleOwner) { status ->
             when (status) {

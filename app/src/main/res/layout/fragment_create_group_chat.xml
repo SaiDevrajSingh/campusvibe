@@ -52,7 +52,7 @@
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_selected_users"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android.layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:singleLine="false" />
 
@@ -86,13 +86,13 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- Create Group Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/button_create_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_check"
+        android:text="Create Group"
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

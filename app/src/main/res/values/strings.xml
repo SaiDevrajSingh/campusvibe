@@ -20,4 +20,6 @@
     <string name="no_liked_posts">No liked posts yet</string>
     <string name="comments">Comments</string>
     <string name="share">Share</string>
+    <string name="post_image">Post Image</string>
+    <string name="likes">%d likes</string>
 </resources>
