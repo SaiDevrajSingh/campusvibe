@@ -27,7 +27,7 @@ class ConversationsRepository {
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     close(e)
-                    return@addSnapshot-listener
+                    return@addSnapshotListener
                 }
                 val conversations = snapshot?.toObjects(Conversation::class.java) ?: emptyList()
                 trySend(conversations)
