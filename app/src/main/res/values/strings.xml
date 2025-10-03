@@ -18,6 +18,6 @@
     <string name="no_posts_available">No posts available</string>
     <string name="error_loading_posts">Error loading posts</string>
     <string name="no_liked_posts">No liked posts yet</string>
-    <string name="post_image">Post image</string>
-    <string name="likes">%d likes</string>
+    <string name="comments">Comments</string>
+    <string name="share">Share</string>
 </resources>

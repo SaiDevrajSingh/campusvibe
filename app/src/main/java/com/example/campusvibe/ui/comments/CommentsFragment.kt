@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.comments
+package com.example.campusvibe.ui.comments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,13 +52,4 @@ class CommentsFragment : Fragment() {
         _binding = null
     }
 }
-
-data class Comment(
-    val id: String = "",
-    val postId: String = "",
-    val userId: String = "",
-    val username: String = "",
-    val text: String = "",
-    val timestamp: Long = 0
-)
 

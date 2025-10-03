@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.ActivityCommentsBinding
+import com.example.campusvibe.model.Comment
 
 class CommentsActivity : AppCompatActivity() {
 
@@ -34,9 +35,9 @@ class CommentsActivity : AppCompatActivity() {
         // TODO: Implement loading comments for the specific post
         // For now, show sample comments
         val sampleComments = listOf(
-            Comment(username = "user1", text = "Great post!"),
-            Comment(username = "user2", text = "Love this!"),
-            Comment(username = "user3", text = "Amazing content!")
+            Comment(username = "user1", text = "Great post!", postId = postId),
+            Comment(username = "user2", text = "Love this!", postId = postId),
+            Comment(username = "user3", text = "Amazing content!", postId = postId)
         )
         (binding.commentsRecyclerView.adapter as? CommentsAdapter)?.updateComments(sampleComments)
     }
