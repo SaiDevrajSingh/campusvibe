@@ -14,6 +14,7 @@ import java.util.UUID
 import android.os.Build
 import android.graphics.ImageDecoder
 import android.provider.MediaStore
+import java.util.Date
 
 class StorageRepository(private val context: Context) {
 
@@ -67,7 +68,7 @@ class StorageRepository(private val context: Context) {
             username = user.username,
             imageUrl = mediaUrl,
             caption = caption,
-            timestamp = System.currentTimeMillis()
+            timestamp = Date()
         )
 
         firestore.collection("posts").document(post.id).set(post).await()
