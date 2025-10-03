@@ -15,20 +15,31 @@ class NotificationRepository {
     private val auth = FirebaseAuth.getInstance()
 
     fun getNotifications(): Flow<List<Notification>> = callbackFlow {
-        val currentUserId = auth.currentUser?.uid ?: return@callbackFlow
+        val currentUserId = auth.currentUser?.uid
 
-        val listener = firestore.collection("notifications")
-            .whereEqualTo("recipientId", currentUserId)
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    close(e)
-                    return@addSnapshotListener
+        if (currentUserId == null) {
+            // If there's no logged-in user, we can close the flow immediately.
+            // This prevents the IllegalStateException because awaitClose is still reachable.
+            close()
+        } else {
+            val listenerRegistration = firestore.collection("notifications")
+                .whereEqualTo("recipientId", currentUserId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        // If there's an error, close the flow with the exception.
+                        close(e)
+                        return@addSnapshotListener
+                    }
+                    val notifications = snapshot?.toObjects(Notification::class.java) ?: emptyList()
+                    // Send the latest list of notifications to the collector.
+                    trySend(notifications)
                 }
-                val notifications = snapshot?.toObjects(Notification::class.java) ?: emptyList()
-                trySend(notifications)
-            }
-        awaitClose { listener.remove() }
+            
+            // The awaitClose block is now guaranteed to be the last statement executed
+            // in the callbackFlow block, which resolves the IllegalStateException.
+            awaitClose { listenerRegistration.remove() }
+        }
     }
 
     suspend fun markNotificationAsRead(notificationId: String) {
