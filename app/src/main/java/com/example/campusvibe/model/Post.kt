@@ -1,6 +1,7 @@
 package com.example.campusvibe.model
 
 import com.google.firebase.firestore.PropertyName
+import java.util.Date
 
 data class Post(
     var id: String = "",
@@ -8,7 +9,7 @@ data class Post(
     var username: String = "",
     @get:PropertyName("image_url") @set:PropertyName("image_url") var imageUrl: String = "",
     var caption: String = "",
-    var timestamp: Long = 0,
+    var timestamp: Date? = null,
     var likes: Int = 0,
     @get:PropertyName("liked_by") @set:PropertyName("liked_by") var likedBy: List<String> = emptyList()
 )
