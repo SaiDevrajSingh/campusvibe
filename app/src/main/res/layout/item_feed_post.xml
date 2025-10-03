@@ -60,6 +60,30 @@
         app:layout_constraintTop_toTopOf="@+id/likeButton"
         tools:text="100 likes" />
 
+    <ImageButton
+        android:id="@+id/commentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/comments"
+        android:src="@drawable/ic_comment"
+        app:layout_constraintStart_toEndOf="@+id/likesCountTextView"
+        app:layout_constraintTop_toBottomOf="@+id/postImageView" />
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/share"
+        android:src="@drawable/ic_share"
+        app:layout_constraintStart_toEndOf="@+id/commentButton"
+        app:layout_constraintTop_toBottomOf="@+id/postImageView" />
+
     <TextView
         android:id="@+id/captionTextView"
         android:layout_width="0dp"
@@ -67,7 +91,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/likesCountTextView"
+        app:layout_constraintTop_toBottomOf="@+id/shareButton"
         tools:text="This is a caption for the post." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
