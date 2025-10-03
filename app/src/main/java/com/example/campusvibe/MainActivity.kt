@@ -4,8 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import com.example.campusvibe.data.AuthViewModel
 import com.example.campusvibe.databinding.ActivityMainBinding
 import com.example.campusvibe.ui.chat.ConversationsActivity
 import com.example.campusvibe.ui.create.AddContentBottomSheetFragment
@@ -17,6 +20,7 @@ import com.example.campusvibe.ui.search.SearchFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +30,19 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        authViewModel.user.observe(this) { user ->
+            if (user == null) {
+                // User is not logged in, navigate to the login screen
+                val navController = findNavController(R.id.nav_host_fragment)
+                navController.navigate(R.id.loginFragment)
+            } else {
+                // User is logged in, set up the main UI
+                setupMainUI()
+            }
+        }
+    }
+
+    private fun setupMainUI() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             if (item.itemId == R.id.nav_add) {
                 AddContentBottomSheetFragment().show(supportFragmentManager, "add_content_sheet")
@@ -64,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        if (savedInstanceState == null) {
+        if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             binding.bottomNavigation.selectedItemId = R.id.nav_home
         }
     }
@@ -100,5 +117,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-
