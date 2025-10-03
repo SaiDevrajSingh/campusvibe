@@ -52,13 +52,16 @@ class UserRepository {
         return following.contains(userId)
     }
 
-    suspend fun getUser(userId: String): User? {
-        return try {
-            firestore.collection("users").document(userId).get().await()
-                .toObject(User::class.java)
-        } catch (e: Exception) {
-            null
+    suspend fun getAllUsers(): Flow<List<User>> = callbackFlow {
+        val listener = firestore.collection("users").addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                close(e)
+                return@addSnapshotListener
+            }
+            val users = snapshot?.toObjects(User::class.java) ?: emptyList()
+            trySend(users)
         }
+        awaitClose { listener.remove() }
     }
 }
 

@@ -50,8 +50,7 @@ class ProfileFragment : Fragment() {
     private fun loadProfileData() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        viewModel.loadUserProfile(currentUserId)
-        viewModel.loadUserPosts(currentUserId)
+        viewModel.loadProfile(currentUserId)
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let { displayUserProfile(it) }
@@ -65,13 +64,13 @@ class ProfileFragment : Fragment() {
     private fun displayUserProfile(user: User) {
         binding.usernameTextView.text = user.username
         binding.fullNameTextView.text = user.fullName
-        binding.bioTextView.text = user.bio.takeIf { it.isNotEmpty() } ?: "No bio yet"
+        binding.bioTextView.text = user.bio ?: "No bio yet"
         binding.followersCountTextView.text = "${user.followers.size} followers"
         binding.followingCountTextView.text = "${user.following.size} following"
         binding.postsCountTextView.text = "${user.postsCount} posts"
 
         Glide.with(this)
-            .load(user.profileImageUrl.takeIf { it.isNotEmpty() } ?: R.drawable.ic_profile)
+            .load(user.profileImageUrl ?: R.drawable.ic_profile)
             .circleCrop()
             .into(binding.profileImageView)
     }

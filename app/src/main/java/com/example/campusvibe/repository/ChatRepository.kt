@@ -33,7 +33,9 @@ class ChatRepository {
 
     suspend fun sendMessage(conversationId: String, text: String) {
         val userId = auth.currentUser?.uid ?: return
-        val message = Message(senderId = userId, text = text, timestamp = Date(System.currentTimeMillis()))
+        val message = Message(senderId = userId, text = text, timestamp = System.currentTimeMillis())
+        firestore.collection("conversations").document(conversationId)
+            .collection("messages").add(message).await()
     }
 
     suspend fun sendMediaMessage(conversationId: String, mediaUri: Uri, mediaType: String, senderId: String) {
@@ -65,6 +67,7 @@ class ChatRepository {
 
     fun setTypingIndicator(conversationId: String, isTyping: Boolean) {
         val userId = auth.currentUser?.uid ?: return
+        firestore.collection("conversations").document(conversationId)
             .update("typingUsers", if (isTyping) listOf(userId) else emptyList())
     }
 
