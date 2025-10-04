@@ -86,13 +86,13 @@
     <!-- Detail & Utility Screens -->
     <fragment
         android:id="@+id/postDetailFragment"
-        android:name="com.example.campusvibe.ui.PostDetailFragment"
+        android:name="com.example.campusvibe.ui.postdetail.PostDetailFragment"
         android:label="Post Detail"
         tools:layout="@layout/fragment_post_detail" />
 
     <fragment
         android:id="@+id/storyDetailFragment"
-        android:name="com.example.campusvibe.ui.StoryDetailFragment"
+        android:name="com.example.campusvibe.ui.storydetail.StoryDetailFragment"
         android:label="Story Detail"
         tools:layout="@layout/fragment_story_detail" />
 
@@ -110,7 +110,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.campusvibe.ui.SettingsFragment"
+        android:name="com.example.campusvibe.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
 
