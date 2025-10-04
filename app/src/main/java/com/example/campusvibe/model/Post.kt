@@ -7,6 +7,7 @@ data class Post(
     var id: String = "",
     @get:PropertyName("user_id") @set:PropertyName("user_id") var userId: String = "",
     var username: String = "",
+    @get:PropertyName("user_profile_image_url") @set:PropertyName("user_profile_image_url") var userProfileImageUrl: String = "",
     @get:PropertyName("image_url") @set:PropertyName("image_url") var imageUrl: String = "",
     var caption: String = "",
     var timestamp: Date? = null,
