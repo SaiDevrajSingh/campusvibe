@@ -23,14 +23,14 @@
 
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.example.campusvibe.ui.SignupFragment"
+        android:name="com.example.campusvibe.ui.auth.RegisterFragment"
         android:label="Signup"
-        tools:layout="@layout/fragment_signup"/>
+        tools:layout="@layout/fragment_register"/>
 
     <!-- Main App Flow -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.campusvibe.ui.HomeFragment"
+        android:name="com.example.campusvibe.ui.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
@@ -56,9 +56,9 @@
 
     <fragment
         android:id="@+id/createPostFragment"
-        android:name="com.example.campusvibe.ui.CreatePostFragment"
+        android:name="com.example.campusvibe.ui.create.CreateFragment"
         android:label="Create Post"
-        tools:layout="@layout/fragment_create_post" />
+        tools:layout="@layout/fragment_create" />
 
     <fragment
         android:id="@+id/reelsFragment"
@@ -104,9 +104,9 @@
 
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.example.campusvibe.ui.NotificationFragment"
+        android:name="com.example.campusvibe.ui.NotificationsFragment"
         android:label="Notifications"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/settingsFragment"

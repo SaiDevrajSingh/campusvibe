@@ -1,24 +1,29 @@
-package com.example.campusvibe.ui.search
+package com.example.campusvibe.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentSearchBinding
 import com.example.campusvibe.model.Post
 import com.example.campusvibe.model.User
+import com.example.campusvibe.ui.search.SearchViewModel
+import com.example.campusvibe.ui.search.PostGridAdapter
+import com.example.campusvibe.ui.search.UserSearchAdapter
 import com.google.android.material.tabs.TabLayout
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var postAdapter: PostGridAdapter
     private lateinit var userAdapter: UserSearchAdapter
@@ -51,10 +56,10 @@ class SearchFragment : Fragment() {
         // Users list
         userAdapter = UserSearchAdapter(emptyList()) { user ->
             // Navigate to user profile
-            val intent = android.content.Intent(requireContext(), androidx.fragment.app.FragmentActivity::class.java)
+            val intent = Intent(requireContext(), FragmentActivity::class.java)
             // For now, navigate to profile fragment with user ID
             // TODO: Create proper UserProfileActivity or enhance ProfileFragment to show other users
-            android.widget.Toast.makeText(requireContext(), "Opening ${user.username}'s profile", android.widget.Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Opening ${user.username}'s profile", Toast.LENGTH_SHORT).show()
         }
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewUsers.adapter = userAdapter
@@ -149,5 +154,3 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 }
-
-

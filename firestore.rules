@@ -8,73 +8,74 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
     // Rules for the 'users' collection
     match /users/{userId} {
-      // Anyone can read a user's profile
-      allow read: if true;
+      // Allow read access to user profiles (more permissive for development)
+      allow read: if isSignedIn() || request.auth == null;
 
-      // Only the authenticated user can create, update, or delete their own profile
-      allow create, update, delete: if isSignedIn() && request.auth.uid == userId;
+      // Only authenticated users can create their own profile
+      allow create: if isSignedIn() && request.auth.uid == userId;
+
+      // Only the owner can update or delete their profile
+      allow update, delete: if isOwner(userId);
     }
 
     // Rules for the 'posts' collection
     match /posts/{postId} {
-      // Only authenticated users can read posts
-      allow read: if isSignedIn();
+      // Allow read access to posts (more permissive for development)
+      allow read: if isSignedIn() || request.auth == null;
 
-      // Only authenticated users can create new posts
+      // Only authenticated users can create posts
       allow create: if isSignedIn();
 
-      // Only the author of a post can update or delete it
+      // Only the author can update or delete posts
       allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
 
-      // Rules for 'likes' subcollection in a post
+      // Rules for 'likes' subcollection
       match /likes/{userId} {
-        // Anyone can read who liked a post
-        allow read: if true;
-
-        // Only authenticated users can like or unlike a post
+        allow read: if true; // Anyone can see who liked a post
         allow create, delete: if isSignedIn() && request.auth.uid == userId;
       }
 
-      // Rules for 'comments' subcollection in a post
+      // Rules for 'comments' subcollection
       match /comments/{commentId} {
-        // Anyone can read comments
-        allow read: if true;
-
-        // Only authenticated users can add or delete comments
+        allow read: if true; // Anyone can read comments
         allow create, delete: if isSignedIn();
       }
     }
 
     // Rules for the 'stories' collection
     match /stories/{storyId} {
-      // Only authenticated users can read stories
-      allow read: if isSignedIn();
-
-      // Only authenticated users can create stories
+      allow read: if isSignedIn() || request.auth == null;
       allow create: if isSignedIn();
-
-      // Only the author of a story can delete it
       allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
     // Rules for the 'reels' collection
     match /reels/{reelId} {
-      // Only authenticated users can read reels
-      allow read: if isSignedIn();
-
-      // Only authenticated users can create reels
+      allow read: if isSignedIn() || request.auth == null;
       allow create: if isSignedIn();
-
-      // Only the author of a reel can delete it
       allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
     // Rules for the 'notifications' collection
     match /notifications/{notificationId} {
-      // Users can only read, create, or delete their own notifications
       allow read, create, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Rules for conversations and messages
+    match /conversations/{conversationId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+    }
+
+    match /messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.example.campusvibe.ui.chat
+package com.example.campusvibe.ui
 
 import android.net.Uri
 import android.os.Bundle
@@ -11,13 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentChatBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.campusvibe.ui.chat.ChatViewModel
+import com.example.campusvibe.ui.chat.ChatViewModelFactory
+import com.example.campusvibe.ui.chat.MessageAdapter
 
 class ChatFragment : Fragment() {
 
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: ChatViewModel by viewModels {
         ChatViewModelFactory(arguments?.getString("conversationId") ?: "")
     }

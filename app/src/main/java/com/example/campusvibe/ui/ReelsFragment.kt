@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.reels
+package com.example.campusvibe.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,12 +9,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.campusvibe.databinding.FragmentReelsBinding
+import com.example.campusvibe.ui.reels.ReelAdapter
+import com.example.campusvibe.ui.reels.ReelsViewModel
+import com.example.campusvibe.ui.reels.ReelViewHolder
 
 class ReelsFragment : Fragment() {
 
     private var _binding: FragmentReelsBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: ReelsViewModel by viewModels()
     private lateinit var adapter: ReelAdapter
 
@@ -66,4 +68,3 @@ class ReelsFragment : Fragment() {
         _binding = null
     }
 }
-

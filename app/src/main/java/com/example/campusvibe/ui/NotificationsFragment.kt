@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.notifications
+package com.example.campusvibe.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.databinding.FragmentNotificationsBinding
+import com.example.campusvibe.ui.notifications.NotificationsViewModel
+import com.example.campusvibe.ui.notifications.NotificationAdapter
 
 class NotificationsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: NotificationsViewModel by viewModels()
     private lateinit var adapter: NotificationAdapter
 
@@ -48,5 +49,3 @@ class NotificationsFragment : Fragment() {
         _binding = null
     }
 }
-
-

@@ -1,6 +1,5 @@
 package com.example.campusvibe.ui.create
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import com.example.campusvibe.model.Post
@@ -16,23 +15,23 @@ import android.graphics.ImageDecoder
 import android.provider.MediaStore
 import java.util.Date
 
-class StorageRepository(private val context: Context) {
+class StorageRepository {
 
     private val storage = FirebaseStorage.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    suspend fun uploadPost(mediaUri: Uri, caption: String, mediaType: String) {
+    suspend fun uploadPost(mediaUri: Uri, caption: String, mediaType: String, context: android.content.Context) {
         val mediaUrl = if (mediaType == "video") {
             uploadVideoToStorage(mediaUri)
         } else {
-            val imageBitmap = compressImage(mediaUri)
+            val imageBitmap = compressImage(mediaUri, context)
             uploadImageToStorage(imageBitmap)
         }
         createPostInFirestore(mediaUrl, caption)
     }
 
-    private fun compressImage(imageUri: Uri): Bitmap {
+    private fun compressImage(imageUri: Uri, context: android.content.Context): Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val source = ImageDecoder.createSource(context.contentResolver, imageUri)
             ImageDecoder.decodeBitmap(source)

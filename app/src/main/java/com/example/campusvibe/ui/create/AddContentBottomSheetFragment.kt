@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.NavHostFragment
 import com.example.campusvibe.R
 import com.example.campusvibe.ui.story.AddStoryActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,9 +24,22 @@ class AddContentBottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<View>(R.id.text_view_add_post).setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, CreateFragment())
-                .commit()
+            // Get the NavController from the parent fragment (which should be the NavHostFragment)
+            val navController = try {
+                // Try to find NavController from the fragment that contains this bottom sheet
+                parentFragment?.let { parentFrag ->
+                    NavHostFragment.findNavController(parentFrag)
+                }
+            } catch (e: Exception) {
+                // Fallback: try to get NavController from activity
+                activity?.let { activity ->
+                    androidx.navigation.Navigation.findNavController(activity, R.id.nav_host_fragment)
+                }
+            }
+
+            navController?.navigate(R.id.createPostFragment)
+                ?: android.widget.Toast.makeText(requireContext(), "Navigation failed", android.widget.Toast.LENGTH_SHORT).show()
+
             dismiss()
         }
 

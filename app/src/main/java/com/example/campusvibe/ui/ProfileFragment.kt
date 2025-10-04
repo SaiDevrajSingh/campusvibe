@@ -1,12 +1,10 @@
-package com.example.campusvibe.ui.profile
+package com.example.campusvibe.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,13 +12,15 @@ import com.bumptech.glide.Glide
 import com.example.campusvibe.R
 import com.example.campusvibe.databinding.FragmentProfileBinding
 import com.example.campusvibe.model.User
+import com.example.campusvibe.ui.profile.EditProfileActivity
+import com.example.campusvibe.ui.profile.ProfilePostAdapter
+import com.example.campusvibe.ui.profile.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var postsAdapter: ProfilePostAdapter
 
@@ -64,21 +64,14 @@ class ProfileFragment : Fragment() {
     }
 
     private fun displayUserProfile(user: User) {
-        // The layout uses different IDs, so we need to find views by ID
-        val fullnameTextView = view?.findViewById<TextView>(R.id.fullname)
-        val bioTextView = view?.findViewById<TextView>(R.id.bio)
-        val postsCountTextView = view?.findViewById<TextView>(R.id.posts_count)
-        val followersCountTextView = view?.findViewById<TextView>(R.id.followers_count)
-        val followingCountTextView = view?.findViewById<TextView>(R.id.following_count)
-        val profileImageView = view?.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
+        // Use ViewBinding instead of findViewById for better performance and type safety
+        binding.fullname.text = user.fullName
+        binding.bio.text = user.bio ?: "No bio yet"
+        binding.postsCount.text = user.postsCount.toString()
+        binding.followersCount.text = user.followers.size.toString()
+        binding.followingCount.text = user.following.size.toString()
 
-        fullnameTextView?.text = user.fullName
-        bioTextView?.text = user.bio ?: "No bio yet"
-        postsCountTextView?.text = user.postsCount.toString()
-        followersCountTextView?.text = user.followers.size.toString()
-        followingCountTextView?.text = user.following.size.toString()
-
-        profileImageView?.let { imageView ->
+        binding.profileImage.let { imageView ->
             Glide.with(this)
                 .load(user.profileImageUrl ?: R.drawable.ic_profile)
                 .circleCrop()
@@ -87,8 +80,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        val editProfileButton = view?.findViewById<Button>(R.id.edit_profile_button)
-        editProfileButton?.setOnClickListener {
+        binding.editProfileButton.setOnClickListener {
             startActivity(Intent(context, EditProfileActivity::class.java))
         }
     }
@@ -98,5 +90,3 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 }
-
-
