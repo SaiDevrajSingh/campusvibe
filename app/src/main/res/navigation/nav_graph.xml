@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <!-- Authentication -->
     <fragment
@@ -141,7 +141,7 @@
             app:destination="@id/addPostFragment" />
         <action
             android:id="@+id/action_profile_to_reels"
-            app.destination="@id/reelsFragment" />
+            app:destination="@id/reelsFragment" />
     </fragment>
 
 </navigation>
