@@ -37,7 +37,7 @@ class AddContentBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            navController?.navigate(R.id.createPostFragment)
+            navController?.navigate(R.id.addPostFragment)
                 ?: android.widget.Toast.makeText(requireContext(), "Navigation failed", android.widget.Toast.LENGTH_SHORT).show()
 
             dismiss()

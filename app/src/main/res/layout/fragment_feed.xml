@@ -18,24 +18,27 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.CampusVibe.PopupOverlay">
 
-            <ImageView
-                android:id="@+id/instagram_logo"
+            <TextView
+                android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:src="@drawable/ic_instagram_logo" />
-
-            <ImageView
-                android:id="@+id/like_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_like" />
+                android:text="CampusVibe"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end">
+
+                <ImageView
+                    android:id="@+id/like_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_like" />
 
                 <ImageView
                     android:id="@+id/messenger_icon"

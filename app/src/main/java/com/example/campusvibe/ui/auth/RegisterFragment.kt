@@ -34,7 +34,7 @@ class RegisterFragment : Fragment() {
 
         viewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
-                is AuthState.SUCCESS -> findNavController().navigate(R.id.action_registerFragment_to_feedFragment)
+                is AuthState.SUCCESS -> findNavController().navigate(R.id.action_login_to_home)
                 is AuthState.ERROR -> Snackbar.make(binding.root, it.message ?: "", Snackbar.LENGTH_SHORT).show()
             }
         }
@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.backToLoginButton.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_signup_to_login)
         }
     }
 

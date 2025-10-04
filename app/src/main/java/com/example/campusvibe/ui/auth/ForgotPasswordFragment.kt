@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.auth
+package com.example.campusvibe.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -36,7 +36,7 @@ class ForgotPasswordFragment : Fragment() {
             when (it) {
                 is AuthState.SUCCESS -> {
                     Snackbar.make(binding.root, "Reset password email sent", Snackbar.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+                    findNavController().navigate(R.id.action_forgotPassword_to_login)
                 }
                 is AuthState.ERROR -> Snackbar.make(binding.root, it.message ?: "", Snackbar.LENGTH_SHORT).show()
             }
@@ -48,7 +48,7 @@ class ForgotPasswordFragment : Fragment() {
         }
 
         binding.backToLoginButton.setOnClickListener {
-            findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_forgotPassword_to_login)
         }
     }
 

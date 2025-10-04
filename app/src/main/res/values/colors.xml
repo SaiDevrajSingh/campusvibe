@@ -9,4 +9,5 @@
     <color name="story_border">#FFC7C7C7</color>
     <color name="blue">#FF3700B3</color>
     <color name="colorAccent">#FF03DAC5</color>
+    <color name="search_bar_background">#2A2A2A</color>
 </resources>
