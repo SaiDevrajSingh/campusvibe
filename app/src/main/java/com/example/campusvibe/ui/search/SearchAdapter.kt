@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.search
+package com.example.campusvibe.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,9 +29,9 @@ class SearchAdapter(private val users: List<User>, private val onUserClick: (Use
 
         fun bind(user: User) {
             binding.usernameTextView.text = user.username
-            if (!user.profileImageUrl.isNullOrEmpty()) {
+            if (!user.profilePictureUrl.isNullOrEmpty()) {
                 Glide.with(itemView.context)
-                    .load(user.profileImageUrl)
+                    .load(user.profilePictureUrl)
                     .into(binding.profileImageView)
             } else {
                 binding.profileImageView.setImageResource(R.drawable.ic_profile)

@@ -32,7 +32,7 @@ class UserSearchAdapter(private val onUserSelected: (User) -> Unit) : RecyclerVi
         fun bind(user: User) {
             binding.usernameTextView.text = user.username
             Glide.with(itemView.context)
-                .load(user.profileImageUrl ?: "https://via.placeholder.com/150")
+                .load(user.profilePictureUrl ?: "https://via.placeholder.com/150")
                 .circleCrop()
                 .into(binding.profileImageView)
 

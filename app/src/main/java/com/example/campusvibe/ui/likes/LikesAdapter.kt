@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.likes
+package com.example.campusvibe.ui.likes
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -34,9 +34,9 @@ class LikesAdapter(
                 .load(postWithUser.post.imageUrl)
                 .into(binding.postImageView)
 
-            if (postWithUser.user.profileImageUrl != null) {
+            if (postWithUser.user.profilePictureUrl != null) {
                 Glide.with(itemView.context)
-                    .load(postWithUser.user.profileImageUrl)
+                    .load(postWithUser.user.profilePictureUrl)
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.userProfileImageView)
             } else {

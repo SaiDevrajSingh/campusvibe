@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.search
+package com.example.campusvibe.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -28,7 +28,7 @@ class UserListAdapter(private var users: List<User>) : RecyclerView.Adapter<User
     inner class UserViewHolder(private val binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.usernameTextView.text = user.username
-            Glide.with(itemView.context).load(user.profileImageUrl).into(binding.profileImageView)
+            Glide.with(itemView.context).load(user.profilePictureUrl).into(binding.profileImageView)
         }
     }
 }

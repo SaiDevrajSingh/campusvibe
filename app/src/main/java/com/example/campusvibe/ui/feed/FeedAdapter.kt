@@ -54,7 +54,7 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
                 user?.let {
                     binding.usernameTextView.text = it.username
                     Glide.with(itemView.context)
-                        .load(it.profileImageUrl)
+                        .load(it.profilePictureUrl)
                         .placeholder(R.drawable.ic_profile)
                         .into(binding.userProfileImageView)
                 }

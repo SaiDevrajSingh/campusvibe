@@ -20,12 +20,16 @@ class AuthRepository {
             id = userId,
             email = email,
             username = username,
-            fullName = fullName,
-            profileImageUrl = "", // Will be set later in profile editing
+            name = fullName,
+            college = "",
+            userType = "student",
+            profilePictureUrl = null,
             bio = "",
             followers = emptyList(),
             following = emptyList(),
-            postsCount = 0
+            posts = 0,
+            highlights = emptyList(),
+            fcmToken = ""
         )
 
         firestore.collection("users").document(userId).set(user).await()

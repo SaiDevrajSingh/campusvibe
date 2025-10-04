@@ -1,4 +1,4 @@
-﻿package com.example.campusvibe.ui.home
+package com.example.campusvibe.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,7 +27,7 @@ class PostAdapter(var posts: List<PostWithUser>) : RecyclerView.Adapter<PostAdap
             binding.textViewLikes.text = "${postWithUser.post.likes} likes"
 
             Glide.with(itemView.context)
-                .load(postWithUser.user.profileImageUrl)
+                .load(postWithUser.user.profilePictureUrl)
                 .into(binding.imageViewProfile)
 
             Glide.with(itemView.context)
