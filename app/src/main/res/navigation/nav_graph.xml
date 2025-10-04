@@ -53,30 +53,95 @@
         android:id="@+id/homeFragment"
         android:name="com.example.campusvibe.ui.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_home_to_add_post"
+            app:destination="@id/addPostFragment" />
+        <action
+            android:id="@+id/action_home_to_reels"
+            app:destination="@id/reelsFragment" />
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.campusvibe.ui.search.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_search_to_add_post"
+            app:destination="@id/addPostFragment" />
+        <action
+            android:id="@+id/action_search_to_reels"
+            app:destination="@id/reelsFragment" />
+        <action
+            android:id="@+id/action_search_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/addPostFragment"
         android:name="com.example.campusvibe.ui.addpost.AddPostFragment"
         android:label="Add Post"
-        tools:layout="@layout/fragment_add_post" />
+        tools:layout="@layout/fragment_add_post" >
+        <action
+            android:id="@+id/action_add_post_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_add_post_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_add_post_to_reels"
+            app:destination="@id/reelsFragment" />
+        <action
+            android:id="@+id/action_add_post_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/reelsFragment"
         android:name="com.example.campusvibe.ui.reels.ReelsFragment"
         android:label="Reels"
-        tools:layout="@layout/fragment_reels" />
+        tools:layout="@layout/fragment_reels" >
+        <action
+            android:id="@+id/action_reels_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_reels_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_reels_to_add_post"
+            app:destination="@id/addPostFragment" />
+        <action
+            android:id="@+id/action_reels_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.campusvibe.ui.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profile_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_profile_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_profile_to_add_post"
+            app:destination="@id/addPostFragment" />
+        <action
+            android:id="@+id/action_profile_to_reels"
+            app:destination="@id/reelsFragment" />
+    </fragment>
 
 </navigation>
