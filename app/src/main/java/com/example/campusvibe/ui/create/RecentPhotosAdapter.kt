@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusvibe.R
+import com.example.campusvibe.databinding.ItemPhotoGridBinding
 
 class RecentPhotosAdapter(
     private val photos: List<Uri>,
@@ -14,9 +15,8 @@ class RecentPhotosAdapter(
 ) : RecyclerView.Adapter<RecentPhotosAdapter.PhotoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_photo_grid, parent, false)
-        return PhotoViewHolder(view)
+        val binding = ItemPhotoGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PhotoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
@@ -25,18 +25,16 @@ class RecentPhotosAdapter(
 
     override fun getItemCount() = photos.size
 
-    inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val photoImage = itemView.findViewById<android.widget.ImageView>(R.id.photo_image)
-        private val cameraIcon = itemView.findViewById<android.widget.ImageView>(R.id.camera_icon)
+    inner class PhotoViewHolder(private val binding: ItemPhotoGridBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(uri: Uri) {
             Glide.with(itemView.context)
                 .load(uri)
                 .centerCrop()
-                .into(photoImage)
+                .into(binding.photoImage)
 
             // Show camera icon for the first item (camera placeholder)
-            cameraIcon.visibility = if (adapterPosition == 0) View.VISIBLE else View.GONE
+            binding.cameraIcon.visibility = if (bindingAdapterPosition == 0) View.VISIBLE else View.GONE
 
             itemView.setOnClickListener {
                 onPhotoClick(uri)

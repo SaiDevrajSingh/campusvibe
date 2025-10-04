@@ -2,7 +2,8 @@
     <string name="app_name">CampusVibe</string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
-    <string name="title_messages">Messages</string>
+    <string name="title_add">Add</string>
+    <string name="title_reels">Reels</string>
     <string name="title_profile">Profile</string>
     <string name="username">Username</string>
     <string name="user_profile_image">User profile image</string>
@@ -22,4 +23,5 @@
     <string name="share">Share</string>
     <string name="post_image">Post Image</string>
     <string name="likes">%d likes</string>
+    <string name="title_messages">Messages</string>
 </resources>

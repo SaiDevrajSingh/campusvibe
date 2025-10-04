@@ -3,8 +3,8 @@ package com.example.campusvibe.ui.chat
 import com.example.campusvibe.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.firestore.snapshots
+import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

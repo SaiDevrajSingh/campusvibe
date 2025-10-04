@@ -42,14 +42,12 @@ class FeedFragment : Fragment() {
     private fun setupStoriesRecyclerView() {
         storyAdapter = StoryAdapter { story ->
             if (story.isPlaceholder && story.id == "add_story") {
-                // Open Add Story activity for the placeholder
                 val intent = Intent(requireContext(), AddStoryActivity::class.java)
                 startActivity(intent)
             } else {
-                // Open Story Viewer for actual stories
                 val intent = Intent(requireContext(), StoryViewActivity::class.java).apply {
                     putExtra("IMAGE_URL", story.imageUrl)
-                    putExtra("USERNAME", story.userId) // TODO: Get actual username
+                    putExtra("USERNAME", story.userId)
                 }
                 startActivity(intent)
             }
@@ -86,20 +84,20 @@ class FeedFragment : Fragment() {
             binding.emptyTextView.visibility = View.GONE
             binding.postsRecyclerView.visibility = View.GONE
         }
+
+        feedViewModel.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+            binding.swipeRefreshLayout.isRefreshing = isRefreshing
+        }
     }
 
     private fun setupClickListeners() {
-        // Removed addStoryButton click listener since we now have it in the stories row
-
         binding.swipeRefreshLayout.setOnRefreshListener {
-            feedViewModel.loadPosts()
-            feedViewModel.loadStories()
+            feedViewModel.refreshData()
         }
     }
 
     private fun loadData() {
-        feedViewModel.loadPosts()
-        feedViewModel.loadStories()
+        feedViewModel.loadInitialData()
     }
 
     override fun onDestroyView() {

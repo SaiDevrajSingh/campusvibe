@@ -27,7 +27,7 @@ class GalleryAdapter(
 
         init {
             itemView.setOnClickListener {
-                onImageClick(imageUris[adapterPosition])
+                onImageClick(imageUris[bindingAdapterPosition])
             }
         }
 

@@ -26,7 +26,22 @@ class FeedViewModel : ViewModel() {
     private val _showError = LiveEvent<Unit>()
     val showError: LiveData<Unit> = _showError
 
-    fun loadPosts() {
+    private val _isRefreshing = MutableLiveData<Boolean>()
+    val isRefreshing: LiveData<Boolean> = _isRefreshing
+
+    fun loadInitialData() {
+        loadPosts()
+        loadStories()
+    }
+
+    fun refreshData() {
+        _isRefreshing.value = true
+        loadPosts()
+        loadStories()
+        _isRefreshing.value = false
+    }
+
+    private fun loadPosts() {
         viewModelScope.launch {
             feedRepository.getPosts()
                 .catch { _showError.call() }
@@ -34,22 +49,11 @@ class FeedViewModel : ViewModel() {
         }
     }
 
-    fun loadStories() {
+    private fun loadStories() {
         viewModelScope.launch {
             try {
                 val storiesList = storyRepository.getStories()
-
-                // Add "Add Story" placeholder at the beginning
-                val addStoryPlaceholder = Story(
-                    id = "add_story",
-                    userId = "add_story",
-                    imageUrl = "", // Will be handled specially in adapter
-                    timestamp = 0,
-                    isPlaceholder = true
-                )
-
-                val storiesWithAddButton = listOf(addStoryPlaceholder) + storiesList
-                _stories.value = storiesWithAddButton
+                _stories.value = storiesList
             } catch (e: Exception) {
                 // Handle story loading error silently for now
             }

@@ -84,6 +84,7 @@ class AddPostFragment : Fragment() {
         galleryAdapter.notifyDataSetChanged()
     }
 
+    @Deprecated("This method is deprecated in favor of using the Activity Result API")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
