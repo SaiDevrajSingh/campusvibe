@@ -1,4 +1,4 @@
-package com.example.campusvibe.ui
+package com.example.campusvibe.ui.profile
 
 import android.content.Intent
 import android.os.Bundle

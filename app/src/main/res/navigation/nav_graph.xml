@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.campusvibe.ui.SearchFragment"
+        android:name="com.example.campusvibe.ui.search.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" />
 
@@ -69,13 +69,13 @@
 
     <fragment
         android:id="@+id/reelsFragment"
-        android:name="com.example.campusvibe.ui.ReelsFragment"
+        android:name="com.example.campusvibe.ui.reels.ReelsFragment"
         android:label="Reels"
         tools:layout="@layout/fragment_reels" />
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.campusvibe.ui.ProfileFragment"
+        android:name="com.example.campusvibe.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 

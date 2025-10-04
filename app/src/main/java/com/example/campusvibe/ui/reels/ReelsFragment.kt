@@ -1,4 +1,4 @@
-package com.example.campusvibe.ui
+package com.example.campusvibe.ui.reels
 
 import android.os.Bundle
 import android.view.LayoutInflater

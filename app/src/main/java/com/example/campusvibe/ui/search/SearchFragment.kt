@@ -1,4 +1,4 @@
-package com.example.campusvibe.ui
+package com.example.campusvibe.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
