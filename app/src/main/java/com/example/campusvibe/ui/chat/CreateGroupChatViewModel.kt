@@ -32,17 +32,11 @@ class CreateGroupChatViewModel : ViewModel() {
         viewModelScope.launch {
             _groupCreationStatus.value = GroupCreationStatus.Loading
             try {
-                conversationsRepository.createGroupConversation(participants, groupName)
-                _groupCreationStatus.value = GroupCreationStatus.Success
+                val groupId = conversationsRepository.createGroupConversation(participants, groupName)
+                _groupCreationStatus.value = GroupCreationStatus.Success(groupId)
             } catch (e: Exception) {
                 _groupCreationStatus.value = GroupCreationStatus.Error(e.message ?: "Failed to create group")
             }
         }
     }
-}
-
-sealed class GroupCreationStatus {
-    object Loading : GroupCreationStatus()
-    object Success : GroupCreationStatus()
-    data class Error(val message: String) : GroupCreationStatus()
 }
