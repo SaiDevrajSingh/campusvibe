@@ -44,11 +44,12 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        messageAdapter = MessageAdapter(emptyList())
         binding.recyclerViewMessages.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewMessages.adapter = messageAdapter
 
         viewModel.messages.observe(viewLifecycleOwner) { messages ->
-            messageAdapter = MessageAdapter(messages)
-            binding.recyclerViewMessages.adapter = messageAdapter
+            messageAdapter.updateMessages(messages)
         }
 
         binding.buttonAttachMedia.setOnClickListener {

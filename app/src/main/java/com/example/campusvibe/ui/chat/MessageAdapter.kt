@@ -16,8 +16,13 @@ import com.google.firebase.auth.FirebaseAuth
 private const val VIEW_TYPE_SENT = 1
 private const val VIEW_TYPE_RECEIVED = 2
 
-class MessageAdapter(private val messages: List<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessageAdapter(private var messages: List<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+    fun updateMessages(newMessages: List<Message>) {
+        messages = newMessages
+        notifyDataSetChanged()
+    }
 
     override fun getItemViewType(position: Int): Int {
         val message = messages[position]
@@ -104,5 +109,3 @@ class MessageAdapter(private val messages: List<Message>) : RecyclerView.Adapter
         }
     }
 }
-
-
