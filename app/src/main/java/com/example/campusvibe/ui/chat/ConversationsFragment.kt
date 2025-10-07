@@ -40,7 +40,7 @@ class ConversationsFragment : Fragment() {
 
         binding.fabCreateGroup.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, CreateGroupChatFragment())
+                .replace(R.id.fragment_container, UserListFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -53,4 +53,3 @@ class ConversationsFragment : Fragment() {
         _binding = null
     }
 }
-
