@@ -20,7 +20,9 @@ class ChatViewModel(private val conversationId: String) : ViewModel() {
     val messages: LiveData<List<Message>> = _messages
 
     init {
-        listenForMessages()
+        if (conversationId.isNotEmpty()) {
+            listenForMessages()
+        }
     }
 
     private fun listenForMessages() {
