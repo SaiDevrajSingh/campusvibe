@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.campusvibe.R
 import com.example.campusvibe.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -31,6 +33,14 @@ class HomeFragment : Fragment() {
         setupRecyclerView()
         observePosts()
         viewModel.fetchFeedPosts()
+
+        binding.chatButton.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_chat)
+        }
+
+        binding.notificationButton.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_notifications)
+        }
     }
 
     private fun setupRecyclerView() {

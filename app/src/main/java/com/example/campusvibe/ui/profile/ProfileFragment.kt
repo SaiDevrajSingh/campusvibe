@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.campusvibe.R
@@ -82,6 +83,10 @@ class ProfileFragment : Fragment() {
     private fun setupClickListeners() {
         binding.editProfileButton.setOnClickListener {
             startActivity(Intent(context, EditProfileActivity::class.java))
+        }
+
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_settings)
         }
     }
 
