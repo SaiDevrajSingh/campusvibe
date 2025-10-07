@@ -68,7 +68,9 @@ class UserListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.searchUsers(newText.orEmpty())
+                if (newText.isNullOrEmpty()) {
+                    viewModel.searchUsers("")
+                }
                 return true
             }
         })
