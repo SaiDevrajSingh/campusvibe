@@ -26,5 +26,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.setupWithNavController(navController)
+
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.addPostFragment -> {
+                    navController.navigate(R.id.addPostFragment)
+                    true
+                }
+                else -> {
+                    // Let the NavController handle the other menu items
+                    navController.navigate(item.itemId)
+                    true
+                }
+            }
+        }
     }
 }
