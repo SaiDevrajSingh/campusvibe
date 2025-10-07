@@ -81,9 +81,9 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.campusvibe.ui.search.SearchFragment"
+        android:name="com.example.campusvibe.ui.chat.UserListFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/user_list_fragment" >
         <action
             android:id="@+id/action_search_to_home"
             app:destination="@id/homeFragment" />
