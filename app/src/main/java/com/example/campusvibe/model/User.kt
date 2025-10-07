@@ -11,7 +11,7 @@ data class User(
     val bio: String? = null,
     val followers: List<String> = emptyList(),
     val following: List<String> = emptyList(),
-    val posts: Int = 0,
+    val posts: List<String> = emptyList(),
     val highlights: List<String> = emptyList(),
     val fcmToken: String = ""
 )

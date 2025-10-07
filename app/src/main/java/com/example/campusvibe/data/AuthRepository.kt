@@ -27,7 +27,7 @@ class AuthRepository {
             bio = "",
             followers = emptyList(),
             following = emptyList(),
-            posts = 0,
+            posts = emptyList(),
             highlights = emptyList(),
             fcmToken = ""
         )
