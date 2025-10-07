@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Hide the action bar for this fragment
+        (activity as AppCompatActivity?)?.supportActionBar?.hide()
 
         setupRecyclerView()
         observePosts()
@@ -58,6 +62,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Show the action bar again when the fragment is destroyed
+        (activity as AppCompatActivity?)?.supportActionBar?.show()
         _binding = null
     }
 }
