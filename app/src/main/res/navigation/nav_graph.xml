@@ -66,6 +66,18 @@
         <action
             android:id="@+id/action_home_to_profile"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_home_to_post_detail"
+            app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_story_detail"
+            app:destination="@id/storyDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_chat"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_home_to_notifications"
+            app:destination="@id/notificationsFragment" />
     </fragment>
 
     <fragment
@@ -142,6 +154,46 @@
         <action
             android:id="@+id/action_profile_to_reels"
             app:destination="@id/reelsFragment" />
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+
+    <!-- Additional Screens -->
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.campusvibe.ui.postdetail.PostDetailFragment"
+        android:label="Post Detail"
+        tools:layout="@layout/fragment_post_detail" />
+
+    <fragment
+        android:id="@+id/storyDetailFragment"
+        android:name="com.example.campusvibe.ui.storydetail.StoryDetailFragment"
+        android:label="Story Detail"
+        tools:layout="@layout/fragment_story_detail" />
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.campusvibe.ui.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.campusvibe.ui.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.campusvibe.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settings_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>
