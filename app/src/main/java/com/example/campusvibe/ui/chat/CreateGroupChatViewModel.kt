@@ -17,8 +17,8 @@ class CreateGroupChatViewModel : ViewModel() {
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
 
-    private val _groupCreationStatus = MutableLiveData<GroupCreationStatus>()
-    val groupCreationStatus: LiveData<GroupCreationStatus> = _groupCreationStatus
+    private val _creationStatus = MutableLiveData<ChatCreationStatus>()
+    val creationStatus: LiveData<ChatCreationStatus> = _creationStatus
 
     fun searchUsers(query: String) {
         viewModelScope.launch {
@@ -30,12 +30,24 @@ class CreateGroupChatViewModel : ViewModel() {
 
     fun createGroupChat(participants: List<String>, groupName: String) {
         viewModelScope.launch {
-            _groupCreationStatus.value = GroupCreationStatus.Loading
+            _creationStatus.value = ChatCreationStatus.Loading
             try {
                 val groupId = conversationsRepository.createGroupConversation(participants, groupName)
-                _groupCreationStatus.value = GroupCreationStatus.Success(groupId)
+                _creationStatus.value = ChatCreationStatus.Success(groupId)
             } catch (e: Exception) {
-                _groupCreationStatus.value = GroupCreationStatus.Error(e.message ?: "Failed to create group")
+                _creationStatus.value = ChatCreationStatus.Error(e.message ?: "Failed to create group")
+            }
+        }
+    }
+
+    fun createOneOnOneChat(otherUserId: String) {
+        viewModelScope.launch {
+            _creationStatus.value = ChatCreationStatus.Loading
+            try {
+                val conversationId = conversationsRepository.getOrCreateOneOnOneConversation(otherUserId)
+                _creationStatus.value = ChatCreationStatus.Success(conversationId)
+            } catch (e: Exception) {
+                _creationStatus.value = ChatCreationStatus.Error(e.message ?: "Failed to create chat")
             }
         }
     }

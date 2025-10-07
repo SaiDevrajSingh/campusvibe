@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusvibe.R
 import com.example.campusvibe.model.Conversation
+import com.example.campusvibe.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ConversationAdapter(
@@ -42,31 +44,24 @@ class ConversationAdapter(
         private val profileImage: CircleImageView = itemView.findViewById(R.id.image_view_profile)
 
         fun bind(conversation: Conversation) {
-            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-            val otherParticipants = conversation.participants.filter { it != currentUserId }
-
-            when {
-                otherParticipants.size == 1 -> {
-                    // 1-on-1 conversation
-                    val otherUserId = otherParticipants.first()
-                    conversationName.text = "User $otherUserId" // TODO: Fetch actual username
-                }
-                otherParticipants.size > 1 -> {
-                    // Group chat
-                    conversationName.text = conversation.groupName ?: "Group (${otherParticipants.size} members)"
-                }
-                else -> {
-                    conversationName.text = "Unknown Conversation"
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+            if (conversation.isGroup) {
+                conversationName.text = conversation.groupName
+                lastMessage.text = conversation.lastMessage?.text ?: "No messages yet"
+                Glide.with(itemView.context).load(R.drawable.ic_profile).into(profileImage)
+            } else {
+                val otherUserId = conversation.participants.find { it != currentUserId }
+                if (otherUserId != null) {
+                    FirebaseFirestore.getInstance().collection("users").document(otherUserId).get()
+                        .addOnSuccessListener { document ->
+                            val user = document.toObject(User::class.java)
+                            conversationName.text = user?.username
+                            lastMessage.text = conversation.lastMessage?.text ?: "No messages yet"
+                            Glide.with(itemView.context).load(user?.profilePictureUrl).placeholder(R.drawable.ic_profile).into(profileImage)
+                        }
                 }
             }
-
-            lastMessage.text = conversation.lastMessage?.text ?: "No messages yet"
-            Glide.with(itemView.context).load(R.drawable.ic_profile).into(profileImage)
-            itemView.setOnClickListener {
-                onConversationClicked(conversation)
-            }
+            itemView.setOnClickListener { onConversationClicked(conversation) }
         }
     }
 }
-
-

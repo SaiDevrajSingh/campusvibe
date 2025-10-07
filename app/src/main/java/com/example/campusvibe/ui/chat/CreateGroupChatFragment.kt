@@ -1,9 +1,11 @@
 package com.example.campusvibe.ui.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -44,17 +46,22 @@ class CreateGroupChatFragment : Fragment() {
             userAdapter.updateUsers(users)
         }
 
-        // Observe group creation status
-        viewModel.groupCreationStatus.observe(viewLifecycleOwner) { status ->
+        viewModel.creationStatus.observe(viewLifecycleOwner) { status ->
             when (status) {
-                is GroupCreationStatus.Success -> {
-                    android.widget.Toast.makeText(requireContext(), "Group created successfully!", android.widget.Toast.LENGTH_SHORT).show()
+                is ChatCreationStatus.Success -> {
+                    Toast.makeText(requireContext(), "Chat created successfully!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                        putExtra("conversationId", status.conversationId)
+                    }
+                    startActivity(intent)
                     parentFragmentManager.popBackStack()
                 }
-                is GroupCreationStatus.Error -> {
-                    android.widget.Toast.makeText(requireContext(), status.message, android.widget.Toast.LENGTH_SHORT).show()
+                is ChatCreationStatus.Error -> {
+                    Toast.makeText(requireContext(), status.message, Toast.LENGTH_SHORT).show()
+                    binding.buttonCreateGroup.isEnabled = true
+                    binding.buttonCreateGroup.text = "Create"
                 }
-                GroupCreationStatus.Loading -> {
+                ChatCreationStatus.Loading -> {
                     binding.buttonCreateGroup.isEnabled = false
                     binding.buttonCreateGroup.text = "Creating..."
                 }
@@ -63,38 +70,32 @@ class CreateGroupChatFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        // Setup user search results
         userAdapter = UserSearchAdapter { user ->
-            if (!selectedUsers.contains(user)) {
+            if (!selectedUsers.any { it.id == user.id }) {
                 selectedUsers.add(user)
-                selectedUsersAdapter.updateUsers(selectedUsers)
                 updateSelectedUsersChips()
             }
         }
-
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewUsers.adapter = userAdapter
 
-        // Setup selected users
         selectedUsersAdapter = SelectedUsersAdapter { user ->
             selectedUsers.remove(user)
-            selectedUsersAdapter.updateUsers(selectedUsers)
             updateSelectedUsersChips()
         }
-
         binding.recyclerViewSelectedUsers.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewSelectedUsers.adapter = selectedUsersAdapter
     }
 
     private fun setupSearch() {
-        binding.searchViewUsers.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        binding.searchViewUsers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { viewModel.searchUsers(it) }
+                viewModel.searchUsers(query.orEmpty())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.searchUsers(it) }
+                viewModel.searchUsers(newText.orEmpty())
                 return true
             }
         })
@@ -102,15 +103,22 @@ class CreateGroupChatFragment : Fragment() {
 
     private fun setupCreateButton() {
         binding.buttonCreateGroup.setOnClickListener {
-            val groupName = binding.editTextGroupName.text.toString().trim()
-            if (selectedUsers.size >= 2 && groupName.isNotEmpty()) {
-                createGroupChat(groupName)
-            } else {
-                android.widget.Toast.makeText(
-                    requireContext(),
-                    "Please select at least 2 users and enter a group name",
-                    android.widget.Toast.LENGTH_SHORT
-                ).show()
+            when (selectedUsers.size) {
+                0 -> {
+                    Toast.makeText(requireContext(), "Please select at least one user", Toast.LENGTH_SHORT).show()
+                }
+                1 -> {
+                    viewModel.createOneOnOneChat(selectedUsers.first().id)
+                }
+                else -> {
+                    val groupName = binding.editTextGroupName.text.toString().trim()
+                    if (groupName.isNotEmpty()) {
+                        val participantIds = selectedUsers.map { it.id } + (FirebaseAuth.getInstance().currentUser?.uid ?: "")
+                        viewModel.createGroupChat(participantIds, groupName)
+                    } else {
+                        Toast.makeText(requireContext(), "Please enter a group name", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -121,21 +129,13 @@ class CreateGroupChatFragment : Fragment() {
             val chip = Chip(requireContext()).apply {
                 text = user.username
                 isCloseIconVisible = true
-                setOnCloseIconClickListener {
+                setOnCloseIconClickListener { _ ->
                     selectedUsers.remove(user)
-                    selectedUsersAdapter.updateUsers(selectedUsers)
                     updateSelectedUsersChips()
                 }
             }
             binding.chipGroupSelectedUsers.addView(chip)
         }
-    }
-
-    private fun createGroupChat(groupName: String) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val participantIds = selectedUsers.map { it.id } + currentUserId
-
-        viewModel.createGroupChat(participantIds, groupName)
     }
 
     override fun onDestroyView() {

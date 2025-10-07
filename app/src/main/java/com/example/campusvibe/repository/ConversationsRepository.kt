@@ -45,4 +45,27 @@ class ConversationsRepository {
         val docRef = firestore.collection("conversations").add(conversation).await()
         return docRef.id
     }
+
+    suspend fun getOrCreateOneOnOneConversation(otherUserId: String): String {
+        val currentUserId = auth.currentUser?.uid ?: throw IllegalStateException("User not logged in")
+        val participants = listOf(currentUserId, otherUserId).sorted()
+
+        val query = firestore.collection("conversations")
+            .whereEqualTo("isGroup", false)
+            .whereEqualTo("participants", participants)
+
+        val snapshot = query.get().await()
+
+        return if (snapshot.documents.isNotEmpty()) {
+            snapshot.documents.first().id
+        } else {
+            val conversation = hashMapOf(
+                "participants" to participants,
+                "timestamp" to System.currentTimeMillis(),
+                "isGroup" to false
+            )
+            val docRef = firestore.collection("conversations").add(conversation).await()
+            docRef.id
+        }
+    }
 }

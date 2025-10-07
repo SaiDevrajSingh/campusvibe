@@ -39,6 +39,9 @@ class ChatRepository {
     }
 
     suspend fun sendMessage(conversationId: String, messageText: String) {
+        if (conversationId.isEmpty()) {
+            return
+        }
         val message = Message(
             senderId = "your_sender_id", // Replace with actual sender ID
             text = messageText
@@ -47,6 +50,9 @@ class ChatRepository {
     }
 
     suspend fun sendMediaMessage(conversationId: String, mediaUri: Uri, mediaType: String, senderId: String) {
+        if (conversationId.isEmpty()) {
+            return
+        }
         val mediaRef = storage.reference.child("media/${UUID.randomUUID()}")
         mediaRef.putFile(mediaUri).await()
         val mediaUrl = mediaRef.downloadUrl.await().toString()
