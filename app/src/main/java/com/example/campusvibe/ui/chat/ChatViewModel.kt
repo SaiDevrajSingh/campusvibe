@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.campusvibe.model.Message
-import com.example.campusvibe.repository.ChatRepository
+import com.example.campusvibe.data.ChatRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -34,8 +34,14 @@ class ChatViewModel(private val conversationId: String) : ViewModel() {
     }
 
     fun sendMessage(messageText: String) {
+        val senderId = auth.currentUser?.uid ?: return
+        val message = Message(
+            senderId = senderId,
+            text = messageText,
+            timestamp = System.currentTimeMillis()
+        )
         viewModelScope.launch {
-            repository.sendMessage(conversationId, messageText)
+            repository.sendMessage(conversationId, message)
         }
     }
 

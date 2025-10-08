@@ -1,13 +1,13 @@
-﻿package com.example.campusvibe.data
+package com.example.campusvibe.data
 
+import android.net.Uri
 import com.example.campusvibe.model.Conversation
-import com.example.campusvibe.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlin.jvm.java
 
 class ChatRepository {
 
@@ -71,10 +71,21 @@ class ChatRepository {
         return null
     }
 
-    suspend fun createConversation(conversation: Conversation): String {
-        val newConversation = firestore.collection("conversations").add(conversation).await()
-        return newConversation.id
+    suspend fun sendMediaMessage(conversationId: String, mediaUri: Uri, mediaType: String, senderId: String): Boolean {
+        return try {
+            // For now, create a message with media URL as placeholder
+            // In a real implementation, you would upload the media file first
+            val message = Message(
+                senderId = senderId,
+                mediaType = mediaType,
+                timestamp = System.currentTimeMillis()
+            )
+            firestore.collection("conversations").document(conversationId)
+                .collection("messages").add(message).await()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
-}
 
 
