@@ -2,9 +2,12 @@ package com.example.campusvibe.data
 
 import android.net.Uri
 import com.example.campusvibe.model.Conversation
+import com.example.campusvibe.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlin.jvm.java
@@ -87,5 +90,4 @@ class ChatRepository {
             false
         }
     }
-
-
+}

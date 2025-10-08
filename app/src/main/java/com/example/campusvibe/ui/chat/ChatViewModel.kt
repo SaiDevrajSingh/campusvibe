@@ -9,6 +9,7 @@ import com.example.campusvibe.model.Message
 import com.example.campusvibe.data.ChatRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ChatViewModel(private val conversationId: String) : ViewModel() {

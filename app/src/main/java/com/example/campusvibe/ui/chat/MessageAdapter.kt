@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusvibe.R
-import com.example.campusvibe.databinding.ItemMessageBinding
+import com.example.campusvibe.databinding.ItemMessageReceivedBinding
 import com.example.campusvibe.databinding.ItemMessageSentBinding
 import com.example.campusvibe.model.Message
 import com.google.firebase.auth.FirebaseAuth
@@ -40,7 +40,7 @@ class MessageAdapter(private var messages: List<Message>) : RecyclerView.Adapter
                 SentMessageViewHolder(binding.root)
             }
             VIEW_TYPE_RECEIVED -> {
-                val binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = ItemMessageReceivedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ReceivedMessageViewHolder(binding.root)
             }
             else -> throw IllegalArgumentException("Invalid view type")
