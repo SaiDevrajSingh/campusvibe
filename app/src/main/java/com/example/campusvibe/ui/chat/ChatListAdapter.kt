@@ -37,6 +37,7 @@ class ChatListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         VH(LayoutInflater.from(parent.context).inflate(R.layout.item_chat_row, parent, false))
 
+    @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: VH, position: Int) {
         val doc = getItem(position)
         val chatId = doc.id

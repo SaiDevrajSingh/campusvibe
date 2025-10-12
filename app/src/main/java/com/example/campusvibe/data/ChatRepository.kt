@@ -56,4 +56,9 @@ class ChatRepository {
         }
         return users
     }
+
+    suspend fun getFollowList(uid: String): List<String> {
+        val document = firestore.collection("users").document(uid).get().await()
+        return document.get("following") as? List<String> ?: emptyList()
+    }
 }

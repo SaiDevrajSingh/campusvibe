@@ -55,9 +55,6 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_home_to_user_list"
-            app:destination="@id/userListFragment" />
-        <action
             android:id="@+id/action_home_to_add_post"
             app:destination="@id/addPostFragment" />
         <action
@@ -73,8 +70,8 @@
             android:id="@+id/action_home_to_story_detail"
             app:destination="@id/storyDetailFragment" />
         <action
-            android:id="@+id/action_home_to_chat"
-            app:destination="@id/chatFragment" />
+            android:id="@+id/action_home_to_chat_list"
+            app:destination="@id/chatListFragment" />
         <action
             android:id="@+id/action_home_to_notifications"
             app:destination="@id/notificationsFragment" />
@@ -87,6 +84,16 @@
         tools:layout="@layout/fragment_user_list">
         <action
             android:id="@+id/action_userListFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.example.campusvibe.ui.chat.ChatListFragment"
+        android:label="Chats"
+        tools:layout="@layout/fragment_chat_list">
+        <action
+            android:id="@+id/action_chat_list_to_chat"
             app:destination="@id/chatFragment" />
     </fragment>
 
@@ -175,7 +182,7 @@
 
     <fragment
         android:id="@+id/notificationsFragment"
-        android.name="com.example.campusvibe.ui.notifications.NotificationsFragment"
+        android:name="com.example.campusvibe.ui.notifications.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications" />
 

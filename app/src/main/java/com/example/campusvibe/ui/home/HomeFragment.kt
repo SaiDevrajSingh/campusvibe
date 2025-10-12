@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
         viewModel.fetchFeedPosts()
 
         binding.chatButton.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_user_list)
+            findNavController().navigate(R.id.action_home_to_chat_list)
         }
 
         binding.notificationButton.setOnClickListener {

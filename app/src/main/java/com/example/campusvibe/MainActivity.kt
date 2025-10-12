@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(navController)
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
             if (item.itemId == R.id.addPostFragment) {
                 navController.navigate(R.id.addPostFragment)
                 // Return true to indicate the item selection has been handled
