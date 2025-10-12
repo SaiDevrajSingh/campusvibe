@@ -51,7 +51,9 @@ class FeedFragment : Fragment() {
             onAddStoryClick = {
                 val intent = Intent(requireContext(), AddStoryActivity::class.java)
                 startActivity(intent)
-            }
+            },
+            currentUser = feedViewModel.currentUser.value,
+            currentUserStory = feedViewModel.currentUserStory.value
         )
 
         binding.storiesRecyclerView.apply {
@@ -76,8 +78,16 @@ class FeedFragment : Fragment() {
             binding.errorTextView.visibility = View.GONE
         }
 
-        feedViewModel.stories.observe(viewLifecycleOwner) { stories ->
+        feedViewModel.followingStories.observe(viewLifecycleOwner) { stories ->
             storyAdapter.submitList(stories)
+        }
+
+        feedViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            storyAdapter.setCurrentUser(user)
+        }
+
+        feedViewModel.currentUserStory.observe(viewLifecycleOwner) { story ->
+            storyAdapter.setCurrentUserStory(story)
         }
 
         feedViewModel.showError.observe(viewLifecycleOwner) {

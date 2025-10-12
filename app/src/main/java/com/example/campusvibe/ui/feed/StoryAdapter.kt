@@ -11,29 +11,35 @@ import com.bumptech.glide.Glide
 import com.example.campusvibe.R
 import com.example.campusvibe.databinding.ItemStoryBinding
 import com.example.campusvibe.model.Story
+import com.example.campusvibe.model.User
 
-private const val VIEW_TYPE_ADD_STORY = 0
-private const val VIEW_TYPE_STORY = 1
+class StoryAdapter(
+    private val onStoryClick: (Story) -> Unit,
+    private val onAddStoryClick: () -> Unit,
+    private var currentUser: User?,
+    private var currentUserStory: Story?
+) : ListAdapter<Story, StoryAdapter.StoryViewHolder>(StoryDiffCallback()) {
 
-class StoryAdapter(private val onStoryClick: (Story) -> Unit, private val onAddStoryClick: () -> Unit) :
-    ListAdapter<Story, RecyclerView.ViewHolder>(StoryDiffCallback()) {
-
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) VIEW_TYPE_ADD_STORY else VIEW_TYPE_STORY
+    fun setCurrentUser(user: User?) {
+        currentUser = user
+        notifyItemChanged(0)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    fun setCurrentUserStory(story: Story?) {
+        currentUserStory = story
+        notifyItemChanged(0)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return if (viewType == VIEW_TYPE_ADD_STORY) {
-            AddStoryViewHolder(binding)
-        } else {
-            StoryViewHolder(binding)
-        }
+        return StoryViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is StoryViewHolder) {
-            holder.bind(getItem(position -1))
+    override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
+        if (position == 0) {
+            holder.bindCurrentUserStory()
+        } else {
+            holder.bind(getItem(position - 1))
         }
     }
 
@@ -58,16 +64,31 @@ class StoryAdapter(private val onStoryClick: (Story) -> Unit, private val onAddS
 
             itemView.setOnClickListener { onStoryClick(story) }
         }
-    }
 
-    inner class AddStoryViewHolder(private val binding: ItemStoryBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        init {
+        fun bindCurrentUserStory() {
             binding.storyUsernameTextView.text = "Your Story"
-            binding.storyImageView.setImageResource(R.drawable.ic_profile)
-            binding.addStoryImageView.visibility = View.VISIBLE
-            itemView.setOnClickListener { onAddStoryClick() }
+            binding.addStoryImageView.visibility = if (currentUserStory == null) View.VISIBLE else View.GONE
+
+            Glide.with(itemView.context)
+                .load(currentUser?.profilePictureUrl)
+                .placeholder(R.drawable.ic_profile)
+                .into(binding.storyImageView)
+
+            if (currentUserStory != null) {
+                binding.storyImageView.borderWidth = 2
+                binding.storyImageView.borderColor =
+                    ContextCompat.getColor(itemView.context, R.color.story_border)
+            } else {
+                binding.storyImageView.borderWidth = 0
+            }
+
+            itemView.setOnClickListener {
+                if (currentUserStory != null) {
+                    onStoryClick(currentUserStory!!)
+                } else {
+                    onAddStoryClick()
+                }
+            }
         }
     }
 }
