@@ -70,7 +70,7 @@ class StoryAdapter(
             binding.addStoryImageView.visibility = if (currentUserStory == null) View.VISIBLE else View.GONE
 
             Glide.with(itemView.context)
-                .load(currentUser?.profilePictureUrl)
+                .load(currentUser?.photoUrl)
                 .placeholder(R.drawable.ic_profile)
                 .into(binding.storyImageView)
 
