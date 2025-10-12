@@ -61,6 +61,11 @@ class UserRepository {
         }
     }
 
+    suspend fun getFollowingIds(userId: String): List<String> {
+        val userDoc = firestore.collection("users").document(userId).get().await()
+        return userDoc.get("following") as? List<String> ?: emptyList()
+    }
+
     suspend fun getAllUsers(): Flow<List<User>> = callbackFlow {
         val listener = firestore.collection("users").addSnapshotListener { snapshot, e ->
             if (e != null) {

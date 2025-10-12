@@ -1,56 +1,40 @@
 package com.example.campusvibe.data
 
 import com.example.campusvibe.model.Story
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
-import kotlin.jvm.java
 
 class StoryRepository {
 
     private val firestore = FirebaseFirestore.getInstance()
+    private val userRepository = UserRepository()
+    private val auth = FirebaseAuth.getInstance()
 
     suspend fun getStories(): List<Story> {
-        val snapshot = firestore.collection("stories").orderBy("timestamp", Query.Direction.DESCENDING).get().await()
+        val currentUserId = auth.currentUser?.uid ?: return emptyList()
+        val followingIds = userRepository.getFollowingIds(currentUserId)
 
-        // For demo purposes, add some sample stories if none exist
-        val stories = snapshot.toObjects(Story::class.java)
-        if (stories.isEmpty()) {
-            // Add sample stories for demonstration
-            val sampleStories = listOf(
-                Story(
-                    id = "sample1",
-                    userId = "user1",
-                    imageUrl = "https://picsum.photos/300/400?random=1",
-                    timestamp = System.currentTimeMillis() - 3600000, // 1 hour ago
-                    isPlaceholder = false
-                ),
-                Story(
-                    id = "sample2",
-                    userId = "user2",
-                    imageUrl = "https://picsum.photos/300/400?random=2",
-                    timestamp = System.currentTimeMillis() - 7200000, // 2 hours ago
-                    isPlaceholder = false
-                ),
-                Story(
-                    id = "sample3",
-                    userId = "user3",
-                    imageUrl = "https://picsum.photos/300/400?random=3",
-                    timestamp = System.currentTimeMillis() - 10800000, // 3 hours ago
-                    isPlaceholder = false
-                )
-            )
+        val userIds = followingIds + currentUserId
 
-            // Add sample stories to Firestore (in a real app, this would be done when users create stories)
-            sampleStories.forEach { story ->
-                firestore.collection("stories").document(story.id).set(story).await()
-            }
-
-            return sampleStories
+        if (userIds.isEmpty()) {
+            return emptyList()
         }
 
-        return stories
+        val snapshot = firestore.collection("stories")
+            .whereIn("userId", userIds)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .get()
+            .await()
+
+        val stories = snapshot.toObjects(Story::class.java)
+
+        return stories.map { story ->
+            val user = userRepository.getUser(story.userId)
+            story.copy(username = user?.displayName ?: "")
+        }
     }
 
     suspend fun uploadStory(story: Story) {
@@ -72,4 +56,3 @@ class StoryRepository {
         }
     }
 }
-

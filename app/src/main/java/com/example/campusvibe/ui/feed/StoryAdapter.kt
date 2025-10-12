@@ -1,7 +1,6 @@
 package com.example.campusvibe.ui.feed
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -14,24 +13,6 @@ import com.example.campusvibe.model.Story
 
 class StoryAdapter(private val onStoryClick: (Story) -> Unit) :
     ListAdapter<Story, StoryAdapter.StoryViewHolder>(StoryDiffCallback()) {
-
-    private val ADD_STORY_ITEM_POSITION = 0
-
-    override fun submitList(list: List<Story>?) {
-        val storiesWithAddButton = mutableListOf<Story>()
-        storiesWithAddButton.add(
-            Story(
-                id = "add_story",
-                userId = "Your Story",
-                imageUrl = "",
-                isPlaceholder = true
-            )
-        )
-        if (list != null) {
-            storiesWithAddButton.addAll(list)
-        }
-        super.submitList(storiesWithAddButton)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -46,23 +27,16 @@ class StoryAdapter(private val onStoryClick: (Story) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(story: Story) {
-            binding.storyUsernameTextView.text = story.userId
+            binding.storyUsernameTextView.text = story.username
 
-            if (bindingAdapterPosition == ADD_STORY_ITEM_POSITION) {
-                binding.addStoryImageView.visibility = View.VISIBLE
-                binding.storyImageView.setImageResource(R.drawable.ic_profile)
-                binding.storyImageView.borderWidth = 0
-            } else {
-                binding.addStoryImageView.visibility = View.GONE
-                Glide.with(itemView.context)
-                    .load(story.imageUrl)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(binding.storyImageView)
+            Glide.with(itemView.context)
+                .load(story.imageUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(binding.storyImageView)
 
-                binding.storyImageView.borderWidth = 2
-                binding.storyImageView.borderColor =
-                    ContextCompat.getColor(itemView.context, R.color.story_border)
-            }
+            binding.storyImageView.borderWidth = 2
+            binding.storyImageView.borderColor =
+                ContextCompat.getColor(itemView.context, R.color.story_border)
 
             itemView.setOnClickListener { onStoryClick(story) }
         }
