@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.campusvibe.data.ChatRepository
 import com.example.campusvibe.databinding.FragmentChatMessagesBinding
 import com.example.campusvibe.model.ChatMessage
-import com.example.campusvibe.ui.chat.MessageAdapter
 import com.example.campusvibe.ui.chat.ChatViewModel
+import com.example.campusvibe.ui.chat.ChatViewModelFactory
+import com.example.campusvibe.ui.chat.MessageAdapter
 import com.google.firebase.Timestamp
 
 class ChatFragment : Fragment() {
@@ -18,7 +20,9 @@ class ChatFragment : Fragment() {
     private var _binding: FragmentChatMessagesBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ChatViewModel by viewModels()
+    private val chatRepository = ChatRepository()
+    private val viewModelFactory = ChatViewModelFactory(chatRepository)
+    private val viewModel: ChatViewModel by viewModels { viewModelFactory }
     private lateinit var adapter: MessageAdapter
 
     override fun onCreateView(
