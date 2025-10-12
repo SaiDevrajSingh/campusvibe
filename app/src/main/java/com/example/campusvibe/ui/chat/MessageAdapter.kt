@@ -16,96 +16,30 @@ import com.google.firebase.auth.FirebaseAuth
 private const val VIEW_TYPE_SENT = 1
 private const val VIEW_TYPE_RECEIVED = 2
 
-class MessageAdapter(private var messages: List<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-
-    fun updateMessages(newMessages: List<Message>) {
-        messages = newMessages
-        notifyDataSetChanged()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        val message = messages[position]
-        return if (message.senderId == currentUserId) {
-            VIEW_TYPE_SENT
-        } else {
-            VIEW_TYPE_RECEIVED
+class MessagesAdapter(private val myUid: String) : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(DIFF) {
+    companion object {
+        val DIFF = object : DiffUtil.ItemCallback<ChatMessage>() {
+            override fun areItemsTheSame(old: ChatMessage, newItem: ChatMessage) = old.id == newItem.id
+            override fun areContentsTheSame(old: ChatMessage, newItem: ChatMessage) = old == newItem
         }
+        const val TYPE_SENT = 1
+        const val TYPE_RECEIVED = 2
     }
+
+    override fun getItemViewType(position: Int): Int =
+        if (getItem(position).from == myUid) TYPE_SENT else TYPE_RECEIVED
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            VIEW_TYPE_SENT -> {
-                val binding = ItemMessageSentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                SentMessageViewHolder(binding.root)
-            }
-            VIEW_TYPE_RECEIVED -> {
-                val binding = ItemMessageReceivedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ReceivedMessageViewHolder(binding.root)
-            }
-            else -> throw IllegalArgumentException("Invalid view type")
-        }
+        val layout = if (viewType == TYPE_SENT) R.layout.item_message_sent else R.layout.item_message_received
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        return object : RecyclerView.ViewHolder(view) {}
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val message = messages[position]
-        when (holder) {
-            is SentMessageViewHolder -> holder.bind(message)
-            is ReceivedMessageViewHolder -> holder.bind(message)
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return messages.size
-    }
-
-    inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.message_text_view)
-        private val messageImage: ImageView? = itemView.findViewById(R.id.message_image_view)
-
-        fun bind(message: Message) {
-            if (message.text.isNotEmpty()) {
-                messageText.text = message.text
-                messageText.visibility = View.VISIBLE
-            } else {
-                messageText.visibility = View.GONE
-            }
-
-            if (!message.mediaUrl.isNullOrEmpty()) {
-                messageImage?.let { imageView ->
-                    imageView.visibility = View.VISIBLE
-                    Glide.with(itemView.context)
-                        .load(message.mediaUrl)
-                        .into(imageView)
-                }
-            } else {
-                messageImage?.visibility = View.GONE
-            }
-        }
-    }
-
-    inner class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.text_view_message)
-        private val messageImage: ImageView? = itemView.findViewById(R.id.message_image_view)
-
-        fun bind(message: Message) {
-            if (message.text.isNotEmpty()) {
-                messageText.text = message.text
-                messageText.visibility = View.VISIBLE
-            } else {
-                messageText.visibility = View.GONE
-            }
-
-            if (!message.mediaUrl.isNullOrEmpty()) {
-                messageImage?.let { imageView ->
-                    imageView.visibility = View.VISIBLE
-                    Glide.with(itemView.context)
-                        .load(message.mediaUrl)
-                        .into(imageView)
-                }
-            } else {
-                messageImage?.visibility = View.GONE
-            }
-        }
+        val msg = getItem(position)
+        val tv = holder.itemView.findViewById<TextView>(R.id.tvMessage)
+        val tvTime = holder.itemView.findViewById<TextView>(R.id.tvTime)
+        tv.text = msg.text
+        tvTime.text = msg.timestamp?.toDate()?.let { android.text.format.DateFormat.format("hh:mm a", it) } ?: ""
     }
 }

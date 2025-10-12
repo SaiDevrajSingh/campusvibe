@@ -12,44 +12,25 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ChatViewModel(private val conversationId: String) : ViewModel() {
+class ChatViewModel @Inject constructor(private val repo: ChatRepository) : ViewModel() {
 
-    private val repository = ChatRepository()
-    private val auth = Firebase.auth
+    private val _chatId = MutableStateFlow<String?>(null)
+    fun setChat(chatId: String) { _chatId.value = chatId }
 
-    private val _messages = MutableLiveData<List<Message>>()
-    val messages: LiveData<List<Message>> = _messages
+    // real-time messages
+    val messages: StateFlow<QuerySnapshot?> = _chatId.filterNotNull().flatMapLatest { chatId ->
+        repo.observeMessages(chatId)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    init {
-        if (conversationId.isNotEmpty()) {
-            listenForMessages()
+    fun sendMessage(chatId: String, msg: ChatMessage) {
+        viewModelScope.launch {
+            repo.sendMessage(chatId, msg)
         }
     }
 
-    private fun listenForMessages() {
+    fun markAsRead(chatId: String, myUid: String) {
         viewModelScope.launch {
-            repository.getMessages(conversationId).collect { messageList ->
-                _messages.value = messageList
-            }
-        }
-    }
-
-    fun sendMessage(messageText: String) {
-        val senderId = auth.currentUser?.uid ?: return
-        val message = Message(
-            senderId = senderId,
-            text = messageText,
-            timestamp = System.currentTimeMillis()
-        )
-        viewModelScope.launch {
-            repository.sendMessage(conversationId, message)
-        }
-    }
-
-    fun sendMediaMessage(mediaUri: Uri, mediaType: String) {
-        val senderId = auth.currentUser?.uid ?: return
-        viewModelScope.launch {
-            repository.sendMediaMessage(conversationId, mediaUri, mediaType, senderId)
+            repo.markChatAsRead(chatId, myUid)
         }
     }
 }
