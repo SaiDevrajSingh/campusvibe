@@ -9,6 +9,9 @@ class ChatViewModelFactory(private val chatRepository: ChatRepository) : ViewMod
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(chatRepository) as T
         }
+        if (modelClass.isAssignableFrom(ChatListViewModel::class.java)) {
+            return ChatListViewModel(chatRepository) as T
+        }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

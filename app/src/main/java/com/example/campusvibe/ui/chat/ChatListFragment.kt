@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.R
+import com.example.campusvibe.data.ChatRepository
 import com.example.campusvibe.databinding.FragmentChatListBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class ChatListFragment : Fragment() {
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ChatListViewModel by viewModels()
+    private val viewModel: ChatListViewModel by viewModels { ChatViewModelFactory(ChatRepository()) }
     private lateinit var adapter: ChatListAdapter
 
     override fun onCreateView(
