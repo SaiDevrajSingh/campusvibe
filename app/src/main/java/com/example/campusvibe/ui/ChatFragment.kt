@@ -1,86 +1,54 @@
 package com.example.campusvibe.ui
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.campusvibe.databinding.FragmentChatBinding
+import com.example.campusvibe.databinding.FragmentChatMessagesBinding
+import com.example.campusvibe.model.User
 import com.example.campusvibe.ui.chat.ChatViewModel
-import com.example.campusvibe.ui.chat.ChatViewModelFactory
 import com.example.campusvibe.ui.chat.MessageAdapter
 
 class ChatFragment : Fragment() {
 
-    private var _binding: FragmentChatBinding? = null
+    private var _binding: FragmentChatMessagesBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory(arguments?.getString("conversationId") ?: "")
-    }
+
+    private val viewModel: ChatViewModel by viewModels()
     private lateinit var messageAdapter: MessageAdapter
-
-    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { sendMediaMessage(it, "image") }
-    }
-
-    private val selectVideoLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { sendMediaMessage(it, "video") }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentChatBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentChatMessagesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        messageAdapter = MessageAdapter(emptyList())
-        binding.recyclerViewMessages.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewMessages.adapter = messageAdapter
+        val user = arguments?.getParcelable<User>("user")
 
-        viewModel.messages.observe(viewLifecycleOwner) { messages ->
-            messageAdapter.updateMessages(messages)
-        }
+        if (user != null) {
+            messageAdapter = MessageAdapter(viewModel.auth.currentUser?.uid.toString())
+            binding.rvMessages.adapter = messageAdapter
 
-        binding.buttonAttachMedia.setOnClickListener {
-            showMediaOptions()
-        }
-
-        binding.buttonSend.setOnClickListener {
-            val messageText = binding.editTextMessage.text.toString()
-            if (messageText.isNotBlank()) {
-                viewModel.sendMessage(messageText)
-                binding.editTextMessage.text.clear()
+            viewModel.getMessages(user.id).observe(viewLifecycleOwner) { messages ->
+                messageAdapter.submitList(messages)
             }
-        }
-    }
 
-    private fun showMediaOptions() {
-        val options = arrayOf("Take Photo", "Choose from Gallery", "Send Video")
-        AlertDialog.Builder(requireContext())
-            .setTitle("Attach Media")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> selectImageLauncher.launch("image/*")
-                    1 -> selectImageLauncher.launch("image/*")
-                    2 -> selectVideoLauncher.launch("video/*")
+            binding.btnSend.setOnClickListener {
+                val message = binding.etMessage.text.toString()
+                if (message.isNotEmpty()) {
+                    viewModel.sendMessage(user.id, message)
+                    binding.etMessage.setText("")
                 }
             }
-            .show()
-    }
-
-    private fun sendMediaMessage(mediaUri: Uri, mediaType: String) {
-        viewModel.sendMediaMessage(mediaUri, mediaType)
+        }
     }
 
     override fun onDestroyView() {

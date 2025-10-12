@@ -2,7 +2,7 @@ package com.example.campusvibe.ui.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app.chat.data.ChatRepository
+import com.example.campusvibe.data.ChatRepository
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

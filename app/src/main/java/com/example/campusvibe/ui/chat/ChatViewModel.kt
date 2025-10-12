@@ -5,32 +5,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.campusvibe.model.Message
 import com.example.campusvibe.data.ChatRepository
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ChatViewModel @Inject constructor(private val repo: ChatRepository) : ViewModel() {
+class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
 
-    private val _chatId = MutableStateFlow<String?>(null)
-    fun setChat(chatId: String) { _chatId.value = chatId }
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    // real-time messages
-    val messages: StateFlow<QuerySnapshot?> = _chatId.filterNotNull().flatMapLatest { chatId ->
-        repo.observeMessages(chatId)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _messages = MutableLiveData<List<Map<String, Any>>>()
+    val messages: LiveData<List<Map<String, Any>>> = _messages
 
-    fun sendMessage(chatId: String, msg: ChatMessage) {
+    fun getMessages(chatId: String): LiveData<List<Map<String, Any>>> {
+        val messagesData = MutableLiveData<List<Map<String, Any>>>()
         viewModelScope.launch {
-            repo.sendMessage(chatId, msg)
+            repository.observeMessages(chatId).collect { snapshot ->
+                val messagesList = snapshot.documents.map { it.data!! }
+                messagesData.postValue(messagesList)
+            }
         }
+        return messagesData
     }
 
-    fun markAsRead(chatId: String, myUid: String) {
+    fun sendMessage(chatId: String, messageText: String) {
+        val message = mapOf(
+            "senderId" to auth.currentUser!!.uid,
+            "text" to messageText,
+            "timestamp" to System.currentTimeMillis()
+        )
         viewModelScope.launch {
-            repo.markChatAsRead(chatId, myUid)
+            repository.sendMessage(chatId, message)
         }
     }
 }

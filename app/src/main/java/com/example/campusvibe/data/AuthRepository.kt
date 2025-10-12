@@ -17,10 +17,10 @@ class AuthRepository {
 
         // Create user profile in Firestore
         val user = User(
-            uid = userId,
+            id = userId,
             email = email,
             username = username,
-            displayName = fullName
+            name = fullName
         )
 
         firestore.collection("users").document(userId).set(user).await()
