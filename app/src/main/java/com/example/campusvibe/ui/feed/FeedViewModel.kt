@@ -1,5 +1,6 @@
 package com.example.campusvibe.ui.feed
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -55,7 +56,7 @@ class FeedViewModel : ViewModel() {
                 val storiesList = storyRepository.getStories()
                 _stories.value = storiesList
             } catch (e: Exception) {
-                // Handle story loading error silently for now
+                Log.e("FeedViewModel", "Error loading stories", e)
             }
         }
     }
