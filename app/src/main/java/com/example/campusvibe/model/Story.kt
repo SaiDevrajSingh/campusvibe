@@ -3,8 +3,8 @@ package com.example.campusvibe.model
 data class Story(
     val id: String = "",
     val userId: String = "",
-    val username: String = "",
+    var username: String = "",
     val imageUrl: String = "",
-    val timestamp: Long = 0,
+    val timestamp: Long = System.currentTimeMillis(),
     val isPlaceholder: Boolean = false
 )

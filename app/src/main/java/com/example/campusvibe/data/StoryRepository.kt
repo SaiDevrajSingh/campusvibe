@@ -17,14 +17,12 @@ class StoryRepository {
         val currentUserId = auth.currentUser?.uid ?: return emptyList()
         val followingIds = userRepository.getFollowingIds(currentUserId)
 
-        val userIds = followingIds + currentUserId
-
-        if (userIds.isEmpty()) {
+        if (followingIds.isEmpty()) {
             return emptyList()
         }
 
         val snapshot = firestore.collection("stories")
-            .whereIn("userId", userIds)
+            .whereIn("userId", followingIds)
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .get()
             .await()

@@ -40,18 +40,19 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupStoriesRecyclerView() {
-        storyAdapter = StoryAdapter { story ->
-            if (story.isPlaceholder && story.id == "add_story") {
-                val intent = Intent(requireContext(), AddStoryActivity::class.java)
-                startActivity(intent)
-            } else {
+        storyAdapter = StoryAdapter(
+            onStoryClick = { story ->
                 val intent = Intent(requireContext(), StoryViewActivity::class.java).apply {
                     putExtra("IMAGE_URL", story.imageUrl)
-                    putExtra("USERNAME", story.userId)
+                    putExtra("USERNAME", story.username)
                 }
                 startActivity(intent)
+            },
+            onAddStoryClick = {
+                val intent = Intent(requireContext(), AddStoryActivity::class.java)
+                startActivity(intent)
             }
-        }
+        )
 
         binding.storiesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
