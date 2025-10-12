@@ -66,15 +66,15 @@ class ProfileFragment : Fragment() {
 
     private fun displayUserProfile(user: User) {
         // Use ViewBinding instead of findViewById for better performance and type safety
-        binding.fullname.text = user.name
-        binding.bio.text = user.bio ?: "No bio yet"
-        binding.postsCount.text = user.posts.toString()
-        binding.followersCount.text = user.followers.size.toString()
-        binding.followingCount.text = user.following.size.toString()
+        binding.fullname.text = user.displayName
+        binding.bio.text = ""
+        binding.postsCount.text = "0"
+        binding.followersCount.text = "0"
+        binding.followingCount.text = "0"
 
         binding.profileImage.let { imageView ->
             Glide.with(this)
-                .load(user.profilePictureUrl ?: R.drawable.ic_profile)
+                .load(user.photoUrl ?: R.drawable.ic_profile)
                 .circleCrop()
                 .into(imageView)
         }

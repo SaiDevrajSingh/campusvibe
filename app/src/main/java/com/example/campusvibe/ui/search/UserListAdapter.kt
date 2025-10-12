@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.campusvibe.databinding.ItemUserSearchBinding
+import com.example.campusvibe.R
+import com.example.campusvibe.databinding.ItemUserBinding
 import com.example.campusvibe.model.User
 
 class UserListAdapter(private var users: List<User>) : RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val binding = ItemUserSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)
     }
 
@@ -20,16 +21,18 @@ class UserListAdapter(private var users: List<User>) : RecyclerView.Adapter<User
 
     override fun getItemCount() = users.size
 
-    fun updateUsers(users: List<User>) {
-        this.users = users
+    fun updateUsers(newUsers: List<User>) {
+        users = newUsers
         notifyDataSetChanged()
     }
 
-    inner class UserViewHolder(private val binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class UserViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
-            binding.usernameTextView.text = user.username
-            Glide.with(itemView.context).load(user.profilePictureUrl).into(binding.profileImageView)
+            binding.usernameTextView.text = user.displayName
+            Glide.with(itemView.context)
+                .load(user.photoUrl)
+                .placeholder(R.drawable.ic_profile)
+                .into(binding.profileImageView)
         }
     }
 }
-

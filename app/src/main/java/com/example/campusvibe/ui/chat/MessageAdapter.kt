@@ -1,84 +1,63 @@
 package com.example.campusvibe.ui.chat
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.campusvibe.R
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.campusvibe.databinding.ItemMessageReceivedBinding
+import com.example.campusvibe.databinding.ItemMessageSentBinding
+import com.example.campusvibe.model.ChatMessage
 
-private const val VIEW_TYPE_SENT = 1
-private const val VIEW_TYPE_RECEIVED = 2
-
-class MessageAdapter(private val currentUid: String) : ListAdapter<Map<String, Any>, RecyclerView.ViewHolder>(MessageDiffCallback()) {
+class MessageAdapter(private val currentUserId: String) : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(DiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
-        val message = getItem(position)
-        return if (message["senderId"] == currentUid) {
-            VIEW_TYPE_SENT
-        } else {
-            VIEW_TYPE_RECEIVED
-        }
+        return if (getItem(position).from == currentUserId) VIEW_TYPE_SENT else VIEW_TYPE_RECEIVED
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
-            val view = layoutInflater.inflate(R.layout.item_message_sent, parent, false)
-            SentMessageViewHolder(view)
+            val binding = ItemMessageSentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            SentMessageViewHolder(binding)
         } else {
-            val view = layoutInflater.inflate(R.layout.item_message_received, parent, false)
-            ReceivedMessageViewHolder(view)
+            val binding = ItemMessageReceivedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ReceivedMessageViewHolder(binding)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = getItem(position)
-        when (holder) {
-            is SentMessageViewHolder -> holder.bind(message)
-            is ReceivedMessageViewHolder -> holder.bind(message)
+        if (holder is SentMessageViewHolder) {
+            holder.bind(message)
+        } else if (holder is ReceivedMessageViewHolder) {
+            holder.bind(message)
         }
     }
 
-    class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.text_message_body)
-        private val timeText: TextView = itemView.findViewById(R.id.text_message_time)
-
-        fun bind(message: Map<String, Any>) {
-            messageText.text = message["text"] as? String
-            val timestamp = message["timestamp"] as? Long
-            if (timestamp != null) {
-                timeText.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
-            }
+    inner class SentMessageViewHolder(private val binding: ItemMessageSentBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: ChatMessage) {
+            binding.textMessage.text = message.text
         }
     }
 
-    class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.text_message_body)
-        private val timeText: TextView = itemView.findViewById(R.id.text_message_time)
-
-        fun bind(message: Map<String, Any>) {
-            messageText.text = message["text"] as? String
-            val timestamp = message["timestamp"] as? Long
-            if (timestamp != null) {
-                timeText.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
-            }
+    inner class ReceivedMessageViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: ChatMessage) {
+            binding.textMessage.text = message.text
         }
     }
 
-    class MessageDiffCallback : DiffUtil.ItemCallback<Map<String, Any>>() {
-        override fun areItemsTheSame(oldItem: Map<String, Any>, newItem: Map<String, Any>): Boolean {
-            return oldItem["timestamp"] == newItem["timestamp"]
+    class DiffCallback : DiffUtil.ItemCallback<ChatMessage>() {
+        override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: Map<String, Any>, newItem: Map<String, Any>): Boolean {
+        override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_SENT = 1
+        private const val VIEW_TYPE_RECEIVED = 2
     }
 }

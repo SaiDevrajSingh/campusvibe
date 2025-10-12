@@ -31,9 +31,9 @@ class UserSearchAdapter(
 
     inner class UserViewHolder(private val binding: ItemUserSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
-            binding.usernameTextView.text = user.username
+            binding.usernameTextView.text = user.displayName
             Glide.with(itemView.context)
-                .load(user.profilePictureUrl ?: "https://via.placeholder.com/150")
+                .load(user.photoUrl ?: "https://via.placeholder.com/150")
                 .circleCrop()
                 .into(binding.profileImageView)
 

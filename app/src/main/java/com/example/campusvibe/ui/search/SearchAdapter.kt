@@ -28,10 +28,10 @@ class SearchAdapter(private val users: List<User>, private val onUserClick: (Use
     inner class UserViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) {
-            binding.usernameTextView.text = user.username
-            if (!user.profilePictureUrl.isNullOrEmpty()) {
+            binding.usernameTextView.text = user.displayName
+            if (!user.photoUrl.isNullOrEmpty()) {
                 Glide.with(itemView.context)
-                    .load(user.profilePictureUrl)
+                    .load(user.photoUrl)
                     .into(binding.profileImageView)
             } else {
                 binding.profileImageView.setImageResource(R.drawable.ic_profile)

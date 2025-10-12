@@ -55,8 +55,8 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_home_to_search"
-            app:destination="@id/searchFragment" />
+            android:id="@+id/action_home_to_user_list"
+            app:destination="@id/userListFragment" />
         <action
             android:id="@+id/action_home_to_add_post"
             app:destination="@id/addPostFragment" />
@@ -81,22 +81,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.campusvibe.ui.chat.UserListFragment"
-        android:label="Search"
-        tools:layout="@layout/user_list_fragment" >
+        android:id="@+id/userListFragment"
+        android:name="com.example.campusvibe.ui.UserListFragment"
+        android:label="Users"
+        tools:layout="@layout/fragment_user_list">
         <action
-            android:id="@+id/action_search_to_home"
-            app:destination="@id/homeFragment" />
-        <action
-            android:id="@+id/action_search_to_add_post"
-            app:destination="@id/addPostFragment" />
-        <action
-            android:id="@+id/action_search_to_reels"
-            app:destination="@id/reelsFragment" />
-        <action
-            android:id="@+id/action_search_to_profile"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_userListFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
 
     <fragment
@@ -109,7 +100,7 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_add_post_to_search"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/userListFragment" />
         <action
             android:id="@+id/action_add_post_to_reels"
             app:destination="@id/reelsFragment" />
@@ -128,7 +119,7 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_reels_to_search"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/userListFragment" />
         <action
             android:id="@+id/action_reels_to_add_post"
             app:destination="@id/addPostFragment" />
@@ -147,7 +138,7 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_profile_to_search"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/userListFragment" />
         <action
             android:id="@+id/action_profile_to_add_post"
             app:destination="@id/addPostFragment" />
@@ -174,13 +165,17 @@
 
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.campusvibe.ui.ChatFragment"
+        android:name="com.example.campusvibe.ui.chat.ChatFragment"
         android:label="Chat"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="otherUid"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/notificationsFragment"
-        android:name="com.example.campusvibe.ui.NotificationsFragment"
+        android.name="com.example.campusvibe.ui.notifications.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications" />
 

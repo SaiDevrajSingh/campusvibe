@@ -27,16 +27,16 @@ class LikesAdapter(
     inner class LikedPostViewHolder(private val binding: ItemLikedPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(postWithUser: PostWithUser) {
-            binding.usernameTextView.text = postWithUser.user.username
+            binding.usernameTextView.text = postWithUser.user.displayName
             binding.captionTextView.text = postWithUser.post.caption
 
             Glide.with(itemView.context)
                 .load(postWithUser.post.imageUrl)
                 .into(binding.postImageView)
 
-            if (postWithUser.user.profilePictureUrl != null) {
+            if (postWithUser.user.photoUrl != null) {
                 Glide.with(itemView.context)
-                    .load(postWithUser.user.profilePictureUrl)
+                    .load(postWithUser.user.photoUrl)
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.userProfileImageView)
             } else {
@@ -45,4 +45,3 @@ class LikesAdapter(
         }
     }
 }
-

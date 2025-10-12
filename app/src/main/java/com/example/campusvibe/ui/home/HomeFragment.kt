@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.R
 import com.example.campusvibe.databinding.FragmentHomeBinding
+import com.example.campusvibe.model.Post
 
 class HomeFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class HomeFragment : Fragment() {
         viewModel.fetchFeedPosts()
 
         binding.chatButton.setOnClickListener {
-            findNavController().navigate(R.id.action_home_to_chat)
+            findNavController().navigate(R.id.action_home_to_user_list)
         }
 
         binding.notificationButton.setOnClickListener {
@@ -55,8 +56,7 @@ class HomeFragment : Fragment() {
 
     private fun observePosts() {
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
-            adapter.posts = posts
-            adapter.notifyDataSetChanged()
+            adapter.updatePosts(posts.map { it.post })
         }
     }
 

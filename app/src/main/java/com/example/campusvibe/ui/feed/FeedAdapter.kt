@@ -52,9 +52,9 @@ class FeedAdapter : ListAdapter<Post, FeedAdapter.PostViewHolder>(PostDiffCallba
                     userRepository.getUser(post.userId)
                 }
                 user?.let {
-                    binding.usernameTextView.text = it.username
+                    binding.usernameTextView.text = it.displayName
                     Glide.with(itemView.context)
-                        .load(it.profilePictureUrl)
+                        .load(it.photoUrl)
                         .placeholder(R.drawable.ic_profile)
                         .into(binding.userProfileImageView)
                 }
