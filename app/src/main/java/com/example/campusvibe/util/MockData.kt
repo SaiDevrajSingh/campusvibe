@@ -1,3 +1,4 @@
+package com.example.campusvibe.util
 
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Date
