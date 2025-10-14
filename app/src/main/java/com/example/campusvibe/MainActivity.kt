@@ -1,6 +1,7 @@
 package com.example.campusvibe
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -36,6 +37,19 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // Use NavigationUI to handle other menu items
                 NavigationUI.onNavDestinationSelected(item, navController)
+            }
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment,
+                R.id.signupFragment,
+                R.id.forgotPasswordFragment -> {
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                }
             }
         }
     }
