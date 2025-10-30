@@ -59,8 +59,19 @@ dependencies {
     implementation("com.github.marlonlom:timeago:4.0.3")
 
     // Supabase
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.2.1")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.2.1")
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.2.1")
-    implementation("io.github.jan-tennert.supabase:realtime-kt:2.2.1")
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.2.1"))
+    implementation("io.github.jan-tennert.supabase:gotrue-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    
+    // Ktor for Supabase
+    implementation(platform("io.ktor:ktor-bom:2.3.5"))
+    implementation("io.ktor:ktor-client-core")
+    implementation("io.ktor:ktor-client-android")
+    implementation("io.ktor:ktor-client-okhttp")
+    implementation("io.ktor:ktor-client-logging")
+    implementation("io.ktor:ktor-client-logging-jvm")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-client-content-negotiation")
 }
