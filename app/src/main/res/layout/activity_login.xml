@@ -74,6 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/pass" />
 
     <Button
+        android:id="@+id/create_new_account_btn"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:shadowColor="@android:color/transparent"
         android:layout_width="0dp"

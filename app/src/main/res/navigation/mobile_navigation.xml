@@ -12,7 +12,7 @@
     <fragment
         android:id="@+id/search"
         android:name="com.SShayar.greenglobe.fragments.SearchFragment"
-        android:label="fragment_search"
+        android.label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <dialog
         android:id="@+id/add"
@@ -29,4 +29,14 @@
         android:name="com.SShayar.greenglobe.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/notification"
+        android:name="com.SShayar.greenglobe.fragments.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/message"
+        android:name="com.SShayar.greenglobe.fragments.MessageFragment"
+        android:label="fragment_message"
+        tools:layout="@layout/fragment_message" />
 </navigation>

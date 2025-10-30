@@ -1,26 +1,45 @@
 {
   "project_info": {
-    "project_number": "943273674594",
-    "project_id": "greenglobe-cca93",
-    "storage_bucket": "greenglobe-cca93.appspot.com"
+    "project_number": "858843118476",
+    "firebase_url": "https://campusvibe-5a7b3-default-rtdb.firebaseio.com",
+    "project_id": "campusvibe-5a7b3",
+    "storage_bucket": "campusvibe-5a7b3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:943273674594:android:bac0ce66529473f0f70e3b",
+        "mobilesdk_app_id": "1:858843118476:android:8ce261bc50b104271934a9",
         "android_client_info": {
-          "package_name": "com.SShayar.greenglobe"
+          "package_name": "com.example.campusvibe"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "858843118476-4ui1fjlgtd47s72n7h0ctm0c95etmdn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.campusvibe",
+            "certificate_hash": "ef4699d625c6953e6bb6038e28403fc143cf1800"
+          }
+        },
+        {
+          "client_id": "858843118476-a9khelgrmui05j0n9rvr87akkssbiqia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAK__awkVZqhQIb1uFftDyvasApgg3U1VE"
+          "current_key": "AIzaSyB9JuKPPVDQ_TWCD1vzYLJquDGTIjSiq8g"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858843118476-a9khelgrmui05j0n9rvr87akkssbiqia.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
