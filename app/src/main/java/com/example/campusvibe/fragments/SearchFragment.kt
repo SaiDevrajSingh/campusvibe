@@ -58,7 +58,7 @@ class SearchFragment : Fragment() {
             val response = supabase.postgrest["users"].select()
             val allUsers = response.decodeList<User>()
             userList.clear()
-            userList.addAll(allUsers.filter { it.uid != currentUserId })
+            userList.addAll(allUsers.filter { it.id != currentUserId })
             adapter.notifyDataSetChanged()
         } catch (e: Exception) {
             // Handle exceptions
@@ -70,11 +70,13 @@ class SearchFragment : Fragment() {
             val supabase = SupabaseClient.client
             val currentUserId = supabase.auth.currentUserOrNull()?.id
             val response = supabase.postgrest["users"].select {
-                filter("name", io.github.jan.supabase.postgrest.query.FilterOperator.EQ, name)
+                filter {
+                    ilike("name", "%$name%")
+                }
             }
             val searchedUsers = response.decodeList<User>()
             userList.clear()
-            userList.addAll(searchedUsers.filter { it.uid != currentUserId })
+            userList.addAll(searchedUsers.filter { it.id != currentUserId })
             adapter.notifyDataSetChanged()
         } catch (e: Exception) {
             // Handle exceptions

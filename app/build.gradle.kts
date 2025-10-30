@@ -54,7 +54,8 @@ dependencies {
     implementation("com.github.marlonlom:timeago:4.0.3")
 
     // Supabase
-    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.1.0")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.1.0")
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.1.0")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.2.1")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.2.1")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.2.1")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:2.2.1")
 }

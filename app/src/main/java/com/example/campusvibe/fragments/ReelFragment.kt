@@ -5,14 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.example.campusvibe.Models.Reel
 import com.example.campusvibe.R
 import com.example.campusvibe.adapter.ReelAdapter
 import com.example.campusvibe.databinding.FragmentReelBinding
-import com.example.campusvibe.utils.REEL
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
+import com.example.campusvibe.utils.SupabaseClient
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.launch
 
 class ReelFragment : Fragment() {
     private lateinit var  binding: FragmentReelBinding
@@ -33,18 +33,23 @@ class ReelFragment : Fragment() {
         binding=FragmentReelBinding.inflate(inflater, container, false)
         adapter= ReelAdapter(requireContext(),reelList)
         binding.viewPager.adapter=adapter
-        Firebase.firestore.collection(REEL).get().addOnSuccessListener {
-            reelList.clear()
-            var temList=ArrayList<Reel>()
-            for (i in it.documents){
-                var reel = i.toObject<Reel>()!!
-                temList.add(reel)
-            }
-            reelList.addAll(temList)
-            reelList.reverse()
-            adapter.notifyDataSetChanged()
+        viewLifecycleOwner.lifecycleScope.launch {
+            fetchReels()
         }
         return binding.root
+    }
+
+    private suspend fun fetchReels() {
+        try {
+            val response = SupabaseClient.client.postgrest["reels"].select()
+            val fetchedReels = response.decodeList<Reel>()
+            reelList.clear()
+            reelList.addAll(fetchedReels)
+            reelList.reverse()
+            adapter.notifyDataSetChanged()
+        } catch (e: Exception) {
+            // Handle exceptions
+        }
     }
 
     companion object {

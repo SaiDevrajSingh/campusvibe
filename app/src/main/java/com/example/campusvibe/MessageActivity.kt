@@ -13,10 +13,13 @@ import com.example.campusvibe.utils.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.PostgresChangeFilter
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.RealtimeChannel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 
 class MessageActivity : AppCompatActivity() {
 
@@ -85,11 +88,11 @@ class MessageActivity : AppCompatActivity() {
     private fun subscribeToMessages(conversationId: String) {
         channel = supabase.channel("messages-$conversationId")
         lifecycleScope.launch {
-            supabase.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+            channel?.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
                 table = "messages"
-                filter("conversation_id", "eq.$conversationId")
-            }.collect { 
-                val newMessage = it.record
+                filter = "\"conversation_id\", \"eq\", \"$conversationId\""
+            }?.collect { 
+                val newMessage = Json.decodeFromJsonElement<Message>(it.record)
                 messages.add(newMessage)
                 runOnUiThread {
                     messageAdapter.notifyItemInserted(messages.size - 1)
@@ -141,7 +144,6 @@ class MessageActivity : AppCompatActivity() {
         super.onDestroy()
         lifecycleScope.launch {
             channel?.unsubscribe()
-            supabase.channel(channel!!.topic).unsubscribe()
         }
     }
 }

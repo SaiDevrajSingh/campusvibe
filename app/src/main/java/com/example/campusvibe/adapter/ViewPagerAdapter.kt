@@ -1,12 +1,10 @@
 package com.example.campusvibe.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
-    FragmentStateAdapter(fragmentManager, lifecycle) {
+class ViewPagerAdapter(fragment: Fragment) :
+    FragmentStateAdapter(fragment) {
     private val fragmentList: MutableList<Fragment> = ArrayList()
     private val titleList: MutableList<String> = ArrayList()
     override fun getItemCount(): Int {
@@ -20,6 +18,10 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     fun addFragments(fragment: Fragment, title: String) {
         fragmentList.add(fragment)
         titleList.add(title)
+    }
+
+    fun getPageTitle(position: Int): CharSequence? {
+        return titleList[position]
     }
 
 }

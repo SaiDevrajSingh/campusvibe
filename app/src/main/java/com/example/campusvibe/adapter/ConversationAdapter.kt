@@ -33,12 +33,12 @@ class ConversationAdapter(private val context: Context, private val conversation
         private val lastMessageTextView: TextView = itemView.findViewById(R.id.last_message)
 
         fun bind(conversation: Conversation) {
-            nameTextView.text = conversation.id
+            nameTextView.text = conversation.id.toString()
             lastMessageTextView.text = conversation.lastMessage
 
             itemView.setOnClickListener {
                 val intent = Intent(context, MessageActivity::class.java)
-                intent.putExtra("conversationId", conversation.id)
+                intent.putExtra("conversationId", conversation.id.toString())
                 context.startActivity(intent)
             }
         }

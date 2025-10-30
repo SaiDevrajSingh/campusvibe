@@ -7,15 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.campusvibe.Models.User
 import com.example.campusvibe.SignUpActivity
 import com.example.campusvibe.adapter.ViewPagerAdapter
 import com.example.campusvibe.databinding.FragmentProfileBinding
 import com.example.campusvibe.utils.SupabaseClient
 import com.google.android.material.tabs.TabLayoutMediator
-import com.squareup.picasso.Picasso
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Count
 import kotlinx.coroutines.launch
 
 
@@ -41,15 +42,12 @@ class ProfileFragment : Fragment() {
             activity?.startActivity(intent)
             activity?.finish()
         }
-        viewPagerAdapter = ViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+        viewPagerAdapter = ViewPagerAdapter(this)
         viewPagerAdapter.addFragments(MyPostFragment(),"POST")
         viewPagerAdapter.addFragments(MyReelsFragment(),"REELS")
         binding.viewPager.adapter=viewPagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = "POST"
-                1 -> tab.text = "REELS"
-            }
+            tab.text = viewPagerAdapter.getPageTitle(position)
         }.attach()
 
         return binding.root
@@ -73,23 +71,40 @@ class ProfileFragment : Fragment() {
 
             if (currentUserId != null) {
                 // Fetch user data
-                val userResponse = supabase.postgrest["users"].select { 
-                    filter("uid", io.github.jan.supabase.postgrest.query.FilterOperator.EQ, currentUserId) 
+                val userResponse = supabase.postgrest["users"].select {
+                    filter {
+                        eq("id", currentUserId)
+                    }
                 }.decodeSingle<User>()
 
                 binding.name.text = userResponse.name
                 binding.bio.text = userResponse.email
                 if (!userResponse.image.isNullOrEmpty()) {
-                    Picasso.get().load(userResponse.image).into(binding.profileImage)
+                    Glide.with(this).load(userResponse.image).into(binding.profileImage)
                 }
-                binding.followerCount.text = userResponse.followers.size.toString()
-                binding.followingCount.text = userResponse.following.size.toString()
+                // Fetch follower count
+                val followerCount = supabase.postgrest["follows"].select(head = true) {
+                    filter {
+                        eq("following_id", currentUserId)
+                    }
+                }.countOrNull()
+                binding.followerCount.text = followerCount.toString()
+                
+                // Fetch following count
+                val followingCount = supabase.postgrest["follows"].select(head = true) {
+                    filter {
+                        eq("follower_id", currentUserId)
+                    }
+                }.countOrNull()
+                binding.followingCount.text = followingCount.toString()
 
                 // Fetch post count
-                val postCountResponse = supabase.postgrest["posts"].select("count") { 
-                    filter("uid", io.github.jan.supabase.postgrest.query.FilterOperator.EQ, currentUserId) 
-                }
-                binding.postCount.text = postCountResponse.data
+                val postCount = supabase.postgrest["posts"].select(head = true) {
+                    filter {
+                        eq("userId", currentUserId)
+                    }
+                }.countOrNull()
+                binding.postCount.text = postCount.toString()
 
             }
         } catch (e: Exception) {

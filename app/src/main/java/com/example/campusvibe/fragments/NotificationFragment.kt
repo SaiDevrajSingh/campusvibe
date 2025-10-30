@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.adapter.NotificationAdapter
 import com.example.campusvibe.Models.Notification
 import com.example.campusvibe.R
 import com.example.campusvibe.databinding.FragmentNotificationBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.campusvibe.utils.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.launch
 
 class NotificationFragment : Fragment() {
 
@@ -29,26 +32,27 @@ class NotificationFragment : Fragment() {
         binding.notificationRv.layoutManager = LinearLayoutManager(requireContext())
         binding.notificationRv.adapter = notificationAdapter
 
-        fetchNotifications()
+        viewLifecycleOwner.lifecycleScope.launch {
+            fetchNotifications()
+        }
 
         return binding.root
     }
 
-    private fun fetchNotifications() {
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        FirebaseFirestore.getInstance().collection("notifications").whereEqualTo("userId", userId)
-            .addSnapshotListener { snapshots, error ->
-                if (error != null) {
-                    // Handle error
-                    return@addSnapshotListener
+    private suspend fun fetchNotifications() {
+        try {
+            val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return
+            val response = SupabaseClient.client.postgrest["notifications"].select {
+                filter {
+                    eq("userId", userId)
                 }
-
-                notificationList.clear()
-                for (doc in snapshots!!) {
-                    val notification = doc.toObject(Notification::class.java)
-                    notificationList.add(notification)
-                }
-                notificationAdapter.notifyDataSetChanged()
             }
+            val fetchedNotifications = response.decodeList<Notification>()
+            notificationList.clear()
+            notificationList.addAll(fetchedNotifications)
+            notificationAdapter.notifyDataSetChanged()
+        } catch (e: Exception) {
+            // Handle exceptions
+        }
     }
 }

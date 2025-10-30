@@ -105,7 +105,9 @@ class HomeFragment : Fragment() {
                 val currentUserId = supabase.auth.currentUserOrNull()?.id
                 if (currentUserId != null) {
                     val followedUsersResponse = supabase.postgrest["users"].select {
-                        filter("followers.follower_id", "eq.$currentUserId")
+                        filter {
+                            eq("followers.follower_id", currentUserId)
+                        }
                     }
                     val followedUsers = followedUsersResponse.decodeList<User>()
                     followList.clear()

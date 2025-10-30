@@ -55,14 +55,14 @@ class SignUpActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     try {
                         val supabase = SupabaseClient.client
-                        val authResult = supabase.auth.signUpWith(Email) {
+                        val authenticatedUser = supabase.auth.signUpWith(Email) {
                             email = binding.email.editText?.text.toString()
                             password = binding.password.editText?.text.toString()
                         }
 
-                        authResult.user?.let { authenticatedUser ->
+                        authenticatedUser?.let {
                             val user = User(
-                                id = authenticatedUser.id,
+                                id = it.id,
                                 name = binding.name.editText?.text.toString(),
                                 email = binding.email.editText?.text.toString(),
                                 image = imageUrl
