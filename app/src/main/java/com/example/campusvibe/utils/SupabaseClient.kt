@@ -18,7 +18,7 @@ object SupabaseClient {
     ) {
         install(Auth)
         install(Postgrest)
-        install(Storage)
         install(Realtime)
+        install(Storage)
     }
 }
