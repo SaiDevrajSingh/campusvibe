@@ -77,7 +77,7 @@ class ProfileFragment : Fragment() {
                 }.decodeSingle<User>()
 
                 binding.name.text = userResponse.name
-                binding.bio.text = userResponse.email
+                binding.bio.text = userResponse.bio
                 if (!userResponse.image.isNullOrEmpty()) {
                     Glide.with(this).load(userResponse.image).into(binding.profileImage)
                 }

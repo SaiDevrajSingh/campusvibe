@@ -68,16 +68,16 @@ class EditProfileActivity : AppCompatActivity() {
             val imageFile = contentResolver.openInputStream(it)?.readBytes()
             if (imageFile != null) {
                 val path = "profile_images/$userId"
-                SupabaseClient.client.storage["images"].upload(path, imageFile, upsert = true)
-                imageUrl = SupabaseClient.client.storage["images"].publicUrl(path)
+                SupabaseClient.client.storage["profile_images"].upload(path, imageFile, upsert = true)
+                imageUrl = SupabaseClient.client.storage["profile_images"].publicUrl(path)
             }
         }
 
-        val updates = mutableMapOf<String, Any>()
+        val updates = mutableMapOf<String, Any?>()
         updates["name"] = name
         updates["bio"] = bio
         if (imageUrl != null) {
-            updates["image"] = imageUrl as Any
+            updates["image"] = imageUrl
         }
 
         SupabaseClient.client.postgrest["users"].update(updates) {
@@ -90,8 +90,8 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            imageUri = data?.data
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.data
             binding.profileImage.setImageURI(imageUri)
         }
     }

@@ -26,6 +26,10 @@ import com.example.campusvibe.utils.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Follow(val follower_id: String, val following_id: String)
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -86,32 +90,44 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val supabase = SupabaseClient.client
-
-                // Fetch Posts
-                val postResponse = supabase.postgrest["posts"].select()
-                val posts = postResponse.decodeList<Post>()
-                postList.clear()
-                postList.addAll(posts)
-                adapter.notifyDataSetChanged()
-
-                // Fetch Stories
-                val storyResponse = supabase.postgrest["stories"].select()
-                val stories = storyResponse.decodeList<Story>()
-                storyList.clear()
-                storyList.addAll(stories)
-                storyAdapter.notifyDataSetChanged()
-
-                // Fetch Followed Users
                 val currentUserId = supabase.auth.currentUserOrNull()?.id
+
                 if (currentUserId != null) {
-                    val followedUsersResponse = supabase.postgrest["users"].select {
+                    // Fetch Posts from followed users
+                    val followedUserIds = supabase.postgrest["follows"].select() { 
                         filter {
-                            eq("followers.follower_id", currentUserId)
+                            eq("follower_id", currentUserId)
+                        }
+                    }.decodeList<Follow>().map { it.following_id }
+
+                    val postResponse = supabase.postgrest["posts"].select() {
+                        filter {
+                            isIn("user_id", followedUserIds)
                         }
                     }
-                    val followedUsers = followedUsersResponse.decodeList<User>()
+                    val posts = postResponse.decodeList<Post>()
+                    postList.clear()
+                    postList.addAll(posts)
+                    adapter.notifyDataSetChanged()
+
+                    // Fetch Stories
+                    val storyResponse = supabase.postgrest["stories"].select()
+                    val stories = storyResponse.decodeList<Story>()
+                    storyList.clear()
+                    storyList.addAll(stories)
+                    storyAdapter.notifyDataSetChanged()
+
+                    // Fetch Users to Follow (Suggestion)
+                    val usersResponse = supabase.postgrest["users"].select() {
+                        filter {
+                            neq("id", currentUserId)
+                            // Optional: Add more filtering logic to exclude users you already follow
+                        }
+                        limit(10) // Limit the number of suggestions
+                    }
+                    val users = usersResponse.decodeList<User>()
                     followList.clear()
-                    followList.addAll(followedUsers)
+                    followList.addAll(users)
                     followAdapter.notifyDataSetChanged()
                 }
             } catch (e: Exception) {

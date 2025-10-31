@@ -6,9 +6,8 @@ import kotlinx.serialization.Serializable
 data class User(
     val id: String,
     val name: String? = null,
+    val username: String? = null,
     val email: String? = null,
     val image: String? = null,
-    val bio: String? = null,
-    val followers: ArrayList<String> = ArrayList(),
-    val following: ArrayList<String> = ArrayList()
+    val bio: String? = null
 )
