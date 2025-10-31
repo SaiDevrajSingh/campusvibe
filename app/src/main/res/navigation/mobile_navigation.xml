@@ -6,37 +6,37 @@
     app:startDestination="@id/home">
     <fragment
         android:id="@+id/home"
-        android:name="com.SShayar.greenglobe.fragments.HomeFragment"
+        android:name="com.example.campusvibe.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/search"
-        android:name="com.SShayar.greenglobe.fragments.SearchFragment"
-        android.label="fragment_search"
+        android:name="com.example.campusvibe.fragments.SearchFragment"
+        android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <dialog
         android:id="@+id/add"
-        android:name="com.SShayar.greenglobe.fragments.AddFragment"
+        android:name="com.example.campusvibe.fragments.AddFragment"
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" />
     <fragment
         android:id="@+id/reel"
-        android:name="com.SShayar.greenglobe.fragments.ReelFragment"
+        android:name="com.example.campusvibe.fragments.ReelFragment"
         android:label="fragment_reel"
         tools:layout="@layout/fragment_reel" />
     <fragment
         android:id="@+id/profile"
-        android:name="com.SShayar.greenglobe.fragments.ProfileFragment"
+        android:name="com.example.campusvibe.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/notification"
-        android:name="com.SShayar.greenglobe.fragments.NotificationFragment"
+        android:name="com.example.campusvibe.fragments.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/message"
-        android:name="com.SShayar.greenglobe.fragments.MessageFragment"
+        android:name="com.example.campusvibe.fragments.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
 </navigation>
