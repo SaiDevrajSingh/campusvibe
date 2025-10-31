@@ -68,7 +68,8 @@ class SignUpActivity : AppCompatActivity() {
                                 image = imageUrl
                             )
                             supabase.postgrest["users"].insert(user)
-                            startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
+                            Toast.makeText(this@SignUpActivity, "Verification email sent. Please check your inbox.", Toast.LENGTH_LONG).show()
+                            startActivity(Intent(this@SignUpActivity, LoginActivity::class.java))
                             finish()
                         } ?: run {
                             Toast.makeText(this@SignUpActivity, "Sign up failed", Toast.LENGTH_SHORT).show()

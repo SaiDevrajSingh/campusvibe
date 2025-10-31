@@ -26,7 +26,16 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="campusvibe"
+                    android:host="login" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".HomeActivity"
             android:exported="false"
