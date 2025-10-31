@@ -26,7 +26,7 @@ class MyReelAdapter(var context: Context, var reelList: ArrayList<Reel>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(context)
-            .load(reelList.get(position).reelUrl)
+            .load(reelList.get(position).videoUrl)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.binding.postImage);
 

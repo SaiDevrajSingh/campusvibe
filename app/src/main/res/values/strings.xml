@@ -1,9 +1,36 @@
 <resources>
-    <string name="app_name">Instagram</string>
+    <string name="app_name">CampusVibe</string>
+    <string name="story_border">Story border</string>
+    <string name="story_image">Story image</string>
+    <string name="add_story">Add story</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <!-- Upload Reel Activity -->
+    <string name="upload_reel">Upload Reel</string>
+    <string name="select_video">Select Video</string>
+    <string name="add_a_caption">Add a caption</string>
+    <string name="upload">Upload Reel</string>
+    <string name="uploading">Uploading…</string>
+    <string name="upload_success">Reel uploaded successfully!</string>
+    <string name="upload_failed">Failed to upload reel. Please try again.</string>
+    <string name="video_too_large">Video is too large. Maximum size is %1$dMB</string>
+    <string name="video_too_long">Video is too long. Maximum duration is %1$d seconds</string>
+    <string name="permission_required">Permission required</string>
+    <string name="storage_permission_required">Storage permission is required to select videos</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_video_instruction">Please select a video to upload</string>
+    <string name="selected_video">Selected: %1$s</string>
+    <string name="duration">Duration: %1$ds</string>
+    <string name="confirm_cancel_upload">Are you sure you want to cancel the upload?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="upload_cancelled">Upload cancelled</string>
+    <string name="error_playing_video">Error playing video</string>
+    <string name="sign_in_required">Please sign in to upload reels</string>
+    <string name="unknown_error">Unknown error occurred</string>
 </resources>

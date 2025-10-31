@@ -25,7 +25,7 @@ class MyPostRvAdapter(var context: Context, var postList: ArrayList<Post>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        Picasso.get().load(postList.get(position).postUrl).into(holder.binding.postImage)
+        Picasso.get().load(postList.get(position).imageUrl).into(holder.binding.postImage)
 
     }
 }

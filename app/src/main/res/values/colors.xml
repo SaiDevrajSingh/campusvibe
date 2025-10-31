@@ -6,4 +6,8 @@
     <color name="blue">#1E88E5</color>
     <color name="yellow">#FFFFFFFF</color>
     <color name="green">#C13584</color>
+    
+    <!-- Add these new colors -->
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="gray_light">#CCCCCC</color>
 </resources>
