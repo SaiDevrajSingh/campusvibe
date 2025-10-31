@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             fetchUserProfile()
         }
-_    }
+    }
 
     private suspend fun fetchUserProfile() {
         try {

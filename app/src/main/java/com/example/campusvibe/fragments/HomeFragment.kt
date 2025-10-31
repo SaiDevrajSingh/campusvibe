@@ -26,6 +26,10 @@ import com.example.campusvibe.utils.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Follow(val follower_id: String, val following_id: String)
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding

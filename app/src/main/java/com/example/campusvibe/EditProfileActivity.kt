@@ -73,11 +73,11 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
-        val updates = mutableMapOf<String, Any>()
+        val updates = mutableMapOf<String, Any?>()
         updates["name"] = name
         updates["bio"] = bio
         if (imageUrl != null) {
-            updates["image"] = imageUrl as Any
+            updates["image"] = imageUrl
         }
 
         SupabaseClient.client.postgrest["users"].update(updates) {
@@ -90,7 +90,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (.requestCode == 100 && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             imageUri = data.data
             binding.profileImage.setImageURI(imageUri)
         }
