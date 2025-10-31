@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.campusvibe.EditProfileActivity
 import com.example.campusvibe.Models.User
 import com.example.campusvibe.SignUpActivity
 import com.example.campusvibe.adapter.ViewPagerAdapter
@@ -37,10 +38,8 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.editProfile.setOnClickListener{
-            val intent = Intent(activity, SignUpActivity::class.java)
-            intent.putExtra("MODE",1)
+            val intent = Intent(activity, EditProfileActivity::class.java)
             activity?.startActivity(intent)
-            activity?.finish()
         }
         viewPagerAdapter = ViewPagerAdapter(this)
         viewPagerAdapter.addFragments(MyPostFragment(),"POST")
