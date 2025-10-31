@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.example.campusvibe.HomeActivity
@@ -20,12 +21,12 @@ class ReelsActivity : AppCompatActivity() {
     val binding by lazy {
         ActivityReelsBinding.inflate(layoutInflater)
     }
-    private lateinit var videoUrl: String
+    private var videoUrl: String? = null
     private val launcher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             lifecycleScope.launch {
                 binding.progressBar.visibility = View.VISIBLE
-                videoUrl = uploadVideo(this@ReelsActivity, it, "reel_videos")!!
+                videoUrl = uploadVideo(this@ReelsActivity, it, "reel_videos")
                 binding.progressBar.visibility = View.GONE
             }
         }
@@ -44,6 +45,10 @@ class ReelsActivity : AppCompatActivity() {
             finish()
         }
         binding.postButton.setOnClickListener {
+            if (videoUrl == null) {
+                Toast.makeText(this, "Please select a video to post", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             lifecycleScope.launch {
                 try {
                     val supabase = SupabaseClient.client
@@ -51,7 +56,7 @@ class ReelsActivity : AppCompatActivity() {
 
                     currentUser?.let {
                         val reel = Reel(
-                            reelUrl = videoUrl,
+                            reelUrl = videoUrl!!,
                             caption = binding.caption.editText?.text.toString()
                         )
 
