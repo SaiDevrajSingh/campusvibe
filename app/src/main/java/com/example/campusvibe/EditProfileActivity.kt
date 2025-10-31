@@ -68,8 +68,8 @@ class EditProfileActivity : AppCompatActivity() {
             val imageFile = contentResolver.openInputStream(it)?.readBytes()
             if (imageFile != null) {
                 val path = "profile_images/$userId"
-                SupabaseClient.client.storage["images"].upload(path, imageFile, upsert = true)
-                imageUrl = SupabaseClient.client.storage["images"].publicUrl(path)
+                SupabaseClient.client.storage["profile_images"].upload(path, imageFile, upsert = true)
+                imageUrl = SupabaseClient.client.storage["profile_images"].publicUrl(path)
             }
         }
 
@@ -90,8 +90,8 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            imageUri = data?.data
+        if (.requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.data
             binding.profileImage.setImageURI(imageUri)
         }
     }
