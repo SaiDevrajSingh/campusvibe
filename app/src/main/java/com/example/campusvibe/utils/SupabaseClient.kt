@@ -16,7 +16,10 @@ object SupabaseClient {
         supabaseUrl = SUPABASE_URL,
         supabaseKey = SUPABASE_KEY
     ) {
-        install(Auth)
+        install(Auth) {
+            scheme = "campusvibe"
+            host = "login"
+        }
         install(Postgrest)
         install(Realtime)
         install(Storage)

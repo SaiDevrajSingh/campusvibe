@@ -1,6 +1,7 @@
 package com.example.campusvibe
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -51,6 +52,20 @@ class LoginActivity : AppCompatActivity() {
 
         binding.createNewAccountBtn.setOnClickListener {
             startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val data: Uri? = intent?.data
+
+        if (data != null && data.scheme == "campusvibe" && data.host == "login") {
+            Toast.makeText(this, "Email verified successfully!", Toast.LENGTH_LONG).show()
+
+            // Optional: redirect to home or dashboard
+            val i = Intent(this, HomeActivity::class.java)
+            startActivity(i)
+            finish()
         }
     }
 }
