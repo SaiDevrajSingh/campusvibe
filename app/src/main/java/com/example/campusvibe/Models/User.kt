@@ -9,6 +9,6 @@ data class User(
     val email: String? = null,
     val image: String? = null,
     val bio: String? = null,
-    val followers: ArrayList<String> = ArrayList(),
-    val following: ArrayList<String> = ArrayList()
+    val followers: List<String> = emptyList(),
+    val following: List<String> = emptyList()
 )
