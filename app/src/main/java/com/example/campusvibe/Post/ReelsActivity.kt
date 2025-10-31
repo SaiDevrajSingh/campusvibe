@@ -26,7 +26,7 @@ class ReelsActivity : AppCompatActivity() {
         uri?.let {
             lifecycleScope.launch {
                 binding.progressBar.visibility = View.VISIBLE
-                videoUrl = uploadVideo(this@ReelsActivity, it, "reel_videos")
+                videoUrl = uploadVideo(this@ReelsActivity, it, "reels")
                 binding.progressBar.visibility = View.GONE
             }
         }
@@ -54,16 +54,35 @@ class ReelsActivity : AppCompatActivity() {
                     val supabase = SupabaseClient.client
                     val currentUser = supabase.auth.currentUserOrNull()
 
-                    currentUser?.let {
+                    currentUser?.let { user ->
                         val reel = Reel(
-                            reelUrl = videoUrl!!,
-                            caption = binding.caption.editText?.text.toString()
+                            userId = user.id,
+                            videoUrl = videoUrl!!,
+                            caption = binding.caption.editText?.text?.toString() ?: ""
                         )
-
-                        supabase.postgrest["reels"].insert(reel)
-
-                        startActivity(Intent(this@ReelsActivity, HomeActivity::class.java))
-                        finish()
+                        // Upload the reel to Supabase
+                        try {
+                            SupabaseClient.client.postgrest.from(Reel.TABLE).insert(reel)
+                            startActivity(Intent(this@ReelsActivity, HomeActivity::class.java))
+                            finish()
+                        } catch (e: Exception) {
+                            Log.e("ReelsActivity", "Error uploading reel", e)
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@ReelsActivity, 
+                                    "Failed to upload reel: ${e.message}", 
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    } ?: run {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@ReelsActivity, 
+                                "User not authenticated", 
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("ReelsActivity", "Error creating reel", e)

@@ -14,6 +14,8 @@ import com.example.campusvibe.utils.uploadImage
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddStoryActivity : AppCompatActivity() {
 
@@ -56,19 +58,30 @@ class AddStoryActivity : AppCompatActivity() {
                 val supabase = SupabaseClient.client
                 val currentUser = supabase.auth.currentUserOrNull()
 
-                currentUser?.let {
-                    val imageUrl = uploadImage(this@AddStoryActivity, imageUri!!, "story_images")
+                currentUser?.let { user ->
+                    val imageUrl = uploadImage(this@AddStoryActivity, imageUri!!, "story_media")
                     if (imageUrl != null) {
-                        val story = Story(
-                            userId = it.id,
-                            imageUrl = imageUrl,
-                            timestamp = System.currentTimeMillis().toString()
+                        // Format timestamp in ISO 8601 format for PostgreSQL
+                        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+                        sdf.timeZone = TimeZone.getTimeZone("UTC")
+                        val currentTime = sdf.format(Date())
+                        
+                        val storyData = mapOf(
+                            "user_id" to user.id,
+                            "image_url" to imageUrl,
+                            "created_at" to currentTime
                         )
-                        supabase.postgrest["stories"].insert(story)
-                        Toast.makeText(this@AddStoryActivity, "Story uploaded successfully", Toast.LENGTH_SHORT).show()
-                        finish()
+                        
+                        try {
+                            supabase.postgrest["stories"].insert(storyData)
+                            Toast.makeText(this@AddStoryActivity, "Story uploaded successfully", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } catch (e: Exception) {
+                            Log.e("AddStoryActivity", "Error inserting story", e)
+                            Toast.makeText(this@AddStoryActivity, "Failed to save story: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
                     } else {
-                        Toast.makeText(this@AddStoryActivity, "Failed to upload story", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AddStoryActivity, "Failed to upload image", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
