@@ -3,6 +3,7 @@ package com.example.campusvibe.Post
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -71,6 +72,7 @@ class AddStoryActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
+                Log.e("AddStoryActivity", "Failed to upload story", e)
                 Toast.makeText(this@AddStoryActivity, "Failed to upload story", Toast.LENGTH_SHORT).show()
             }
         }

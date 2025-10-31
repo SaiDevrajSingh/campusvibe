@@ -3,6 +3,7 @@ package com.example.campusvibe.Post
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -60,7 +61,7 @@ class ReelsActivity : AppCompatActivity() {
                         finish()
                     }
                 } catch (e: Exception) {
-                    // Handle exceptions
+                    Log.e("ReelsActivity", "Error creating reel", e)
                 }
             }
         }
