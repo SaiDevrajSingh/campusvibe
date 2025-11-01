@@ -62,7 +62,7 @@
             android:layout_height="300dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:src="@drawable/loading" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:id="@+id/caption"

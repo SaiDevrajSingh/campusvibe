@@ -5,33 +5,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import java.text.SimpleDateFormat
 import java.util.*
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusvibe.Models.Post
-import com.example.campusvibe.Models.Reel
 import com.example.campusvibe.Models.Story
-import com.example.campusvibe.Models.StoryWithUser
 import com.example.campusvibe.Models.User
 import com.example.campusvibe.R
-import com.example.campusvibe.adapter.FollowAdapter
 import com.example.campusvibe.adapter.PostAdapter
-import com.example.campusvibe.adapter.ReelAdapter
 import com.example.campusvibe.adapter.StoryAdapter
 import com.example.campusvibe.databinding.FragmentHomeBinding
 import com.example.campusvibe.utils.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -42,8 +31,6 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private var postList = ArrayList<Post>()
     private lateinit var adapter: PostAdapter
-    private var followList = ArrayList<User>()
-    private lateinit var followAdapter: FollowAdapter
     private var storyList = ArrayList<Story>()
     private lateinit var storyAdapter: StoryAdapter
 
@@ -68,32 +55,9 @@ class HomeFragment : Fragment() {
         binding.postRv.layoutManager = LinearLayoutManager(requireContext())
         binding.postRv.adapter = adapter
 
-        followAdapter = FollowAdapter(requireContext(), followList)
-        binding.followRv.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.followRv.adapter = followAdapter
-
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.materialToolbar2)
-
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.option_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.like -> {
-                        findNavController().navigate(R.id.notification)
-                        return true
-                    }
-                    R.id.message -> {
-                        findNavController().navigate(R.id.message)
-                        return true
-                    }
-                }
-                return false
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        binding.sendIcon.setOnClickListener {
+            findNavController().navigate(R.id.message)
+        }
 
         fetchData()
 
@@ -213,30 +177,6 @@ class HomeFragment : Fragment() {
                             Log.d("StoryDebug", "First story - ID: ${firstStory.id}, User: ${firstStory.username}, Image: ${firstStory.imageUrl}")
                         }
                     }
-                    
-                    // Fetch suggested users to follow
-                    val following = supabase.postgrest["follows"]
-                        .select { 
-                            filter { 
-                                eq("follower_id", currentUser.id) 
-                            } 
-                        }
-                        .decodeList<Follow>()
-                        .map { it.following_id }
-                    
-                    val suggestedUsers = supabase.postgrest["users"]
-                        .select()
-                        .decodeList<User>()
-                        .filter { 
-                            it.id != currentUser.id && 
-                            !following.contains(it.id) 
-                        }
-                        .shuffled()
-                        .take(10)
-                    
-                    followList.clear()
-                    followList.addAll(suggestedUsers)
-                    followAdapter.notifyDataSetChanged()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
