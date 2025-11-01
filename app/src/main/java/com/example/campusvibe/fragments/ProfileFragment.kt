@@ -1,50 +1,37 @@
 package com.example.campusvibe.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.example.campusvibe.EditProfileActivity
-import com.example.campusvibe.Models.User
-import com.example.campusvibe.SignUpActivity
 import com.example.campusvibe.adapter.ViewPagerAdapter
 import com.example.campusvibe.databinding.FragmentProfileBinding
 import com.example.campusvibe.utils.SupabaseClient
 import com.google.android.material.tabs.TabLayoutMediator
+import com.squareup.picasso.Picasso
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.Count
 import kotlinx.coroutines.launch
-
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var viewPagerAdapter: ViewPagerAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        binding.editProfile.setOnClickListener{
-            val intent = Intent(activity, EditProfileActivity::class.java)
-            activity?.startActivity(intent)
-        }
         viewPagerAdapter = ViewPagerAdapter(this)
-        viewPagerAdapter.addFragments(MyPostFragment(),"POST")
-        viewPagerAdapter.addFragments(MyReelsFragment(),"REELS")
-        binding.viewPager.adapter=viewPagerAdapter
+        viewPagerAdapter.addFragments(MyPostFragment(), "My Post")
+        viewPagerAdapter.addFragments(MyReelsFragment(), "My Reels")
+        binding.viewPager.adapter = viewPagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = viewPagerAdapter.getPageTitle(position)
         }.attach()
@@ -52,63 +39,49 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-
-    }
-
     override fun onStart() {
         super.onStart()
-        viewLifecycleOwner.lifecycleScope.launch {
-            fetchUserProfile()
-        }
-    }
+        val currentUser = SupabaseClient.client.auth.currentUserOrNull()
 
-    private suspend fun fetchUserProfile() {
-        try {
-            val supabase = SupabaseClient.client
-            val currentUserId = supabase.auth.currentUserOrNull()?.id
+        if (currentUser != null) {
+            val userId = currentUser.id
+            lifecycleScope.launch {
+                try {
+                    val user = SupabaseClient.client.postgrest.from("users").select() { filter {
+                        eq("id", userId)
+                    } }.data
 
-            if (currentUserId != null) {
-                // Fetch user data
-                val userResponse = supabase.postgrest["users"].select {
-                    filter {
-                        eq("id", currentUserId)
+                    val jsonObject = Json.parseToJsonElement(user).jsonObject
+                    val name = jsonObject["name"]?.jsonPrimitive?.content
+                    val bio = jsonObject["bio"]?.jsonPrimitive?.content
+                    val imageUrl = jsonObject["image"]?.jsonPrimitive?.content
+                    val followers = jsonObject["followers"]?.jsonPrimitive?.content
+                    val following = jsonObject["following"]?.jsonPrimitive?.content
+
+                    binding.name.text = name
+                    binding.bio.text = bio
+                    if (imageUrl != null) {
+                        Picasso.get().load(imageUrl).into(binding.profileImage)
                     }
-                }.decodeSingle<User>()
+                    binding.followerCount.text = followers
+                    binding.followingCount.text = following
 
-                binding.name.text = userResponse.name
-                binding.bio.text = userResponse.bio
-                if (!userResponse.image.isNullOrEmpty()) {
-                    Glide.with(this).load(userResponse.image).into(binding.profileImage)
+                    val postResult = SupabaseClient.client.postgrest.from("posts").select() { filter {
+                        eq("user_id", userId)
+                    } }.data
+                    val postCount = Json.parseToJsonElement(postResult).jsonObject.size
+                    binding.postCount.text = postCount.toString()
+
+
+                    val reelResult = SupabaseClient.client.postgrest.from("reels").select() { filter {
+                        eq("user_id", userId)
+                    } }.data
+                    val reelCount = Json.parseToJsonElement(reelResult).jsonObject.size
+
+                } catch (e: Exception) {
+                    // Handle exception
                 }
-                // Fetch follower count
-                val followerCount = supabase.postgrest["follows"].select(head = true) {
-                    filter {
-                        eq("following_id", currentUserId)
-                    }
-                }.countOrNull()
-                binding.followerCount.text = followerCount.toString()
-                
-                // Fetch following count
-                val followingCount = supabase.postgrest["follows"].select(head = true) {
-                    filter {
-                        eq("follower_id", currentUserId)
-                    }
-                }.countOrNull()
-                binding.followingCount.text = followingCount.toString()
-
-                // Fetch post count
-                val postCount = supabase.postgrest["posts"].select(head = true) {
-                    filter {
-                        eq("userId", currentUserId)
-                    }
-                }.countOrNull()
-                binding.postCount.text = postCount.toString()
-
             }
-        } catch (e: Exception) {
-            // Handle exceptions
         }
     }
-
 }

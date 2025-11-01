@@ -34,7 +34,7 @@ class MyReelsFragment : Fragment() {
             if (currentUserId != null) {
                 val reels = SupabaseClient.client.postgrest["reels"].select {
                     filter {
-                        eq("userId", currentUserId)
+                        eq("user_id", currentUserId)
                     }
                 }.decodeList<Reel>()
                 reelList.addAll(reels)
