@@ -1,28 +1,25 @@
 package com.example.campusvibe.adapter
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-// StoryViewerActivity will be implemented later
 import com.example.campusvibe.Models.Story
 import com.example.campusvibe.R
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlin.jvm.java
 
 class StoryAdapter(
     private val context: Context,
     private val storyList: List<Story>
 ) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
-
-    var onStoryClick: ((Story) -> Unit)? = null
 
     inner class StoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val storyImage: CircleImageView = view.findViewById(R.id.storyImage)
@@ -49,36 +46,23 @@ class StoryAdapter(
             .placeholder(R.drawable.ic_profile_placeholder)
             .error(R.drawable.ic_profile_placeholder)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .listener(object : com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable> {
-                override fun onLoadFailed(e: com.bumptech.glide.load.engine.GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?, isFirstResource: Boolean): Boolean {
-                    Log.e("StoryAdapter", "Failed to load story image: ${e?.message}")
-                    return false
-                }
-                override fun onResourceReady(resource: android.graphics.drawable.Drawable?, model: Any?, target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, isFirstResource: Boolean): Boolean {
-                    Log.d("StoryAdapter", "Successfully loaded story image")
-                    return false
-                }
-            })
             .into(holder.storyImage)
         
-        // Show/hide add button for the first item (current user)
-        holder.addStoryButton.visibility = if (position == 0) View.VISIBLE else View.GONE
+        // Remove the add story button as requested
+        holder.addStoryButton.visibility = View.GONE
         
-        // Handle click on the story
+        // Handle click on the story to view it
         holder.itemView.setOnClickListener {
-            if (position == 0) {
-                // Open camera or gallery to add a new story
-                onStoryClick?.invoke(story)
-            } else {
-                // TODO: Open story viewer
-                // For now, just show a toast
-                android.widget.Toast.makeText(context, "Opening story...", android.widget.Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putString("imageUrl", story.imageUrl)
+                putString("username", story.username)
+                putString("profileImageUrl", story.profileImage)
             }
-        }
-        
-        // Add click listener for the add button
-        holder.addStoryButton.setOnClickListener {
-            onStoryClick?.invoke(story)
+            try {
+                holder.itemView.findNavController().navigate(R.id.story_view, bundle)
+            } catch (e: IllegalStateException) {
+                Log.e("StoryAdapter", "Navigation failed: ${e.message}")
+            }
         }
         
         // Set border color (temporarily all unviewed)

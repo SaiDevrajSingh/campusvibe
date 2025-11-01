@@ -39,4 +39,20 @@
         android:name="com.example.campusvibe.fragments.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/story_view"
+        android:name="com.example.campusvibe.fragments.StoryViewFragment"
+        android:label="fragment_story_view"
+        tools:layout="@layout/fragment_story_view">
+        <argument
+            android:name="imageUrl"
+            app:argType="string" />
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="profileImageUrl"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

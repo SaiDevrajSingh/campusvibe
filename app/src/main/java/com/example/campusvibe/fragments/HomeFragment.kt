@@ -55,10 +55,6 @@ class HomeFragment : Fragment() {
         binding.postRv.layoutManager = LinearLayoutManager(requireContext())
         binding.postRv.adapter = adapter
 
-        binding.sendIcon.setOnClickListener {
-            findNavController().navigate(R.id.message)
-        }
-
         fetchData()
 
         return binding.root
@@ -80,7 +76,7 @@ class HomeFragment : Fragment() {
                         }
                     }.decodeList<Follow>().map { it.following_id }
 
-                    // Add current user's ID to see their own posts
+                    // Add current user's ID to see their own posts and stories
                     val allUserIds = followedUserIds + currentUser.id
                     
                     // Fetch posts
@@ -90,31 +86,30 @@ class HomeFragment : Fragment() {
                         }
                     }.decodeList<Post>()
                     
-                    Log.d("HomeFragment", "Fetched ${posts.size} posts")
-                    posts.forEachIndexed { index, post ->
-                        Log.d("HomeFragment", "Post $index: id=${post.id}, userId=${post.userId}, imageUrl=${post.imageUrl}, caption=${post.caption}")
-                    }
+                    Log.d("HomeFragment", "Fetched ${posts.size} posts for users: $allUserIds")
                     
                     postList.clear()
                     postList.addAll(posts)
                     adapter.notifyDataSetChanged()
 
-                    // Fetch Stories from the last 24 hours
+                    // Fetch Stories from the last 24 hours from followed users and current user
                     val oneDayAgoMs = System.currentTimeMillis() - (24 * 60 * 60 * 1000)
                     
-                    // Get all recent stories
-                    Log.d("StoryDebug", "Fetching stories from database...")
+                    Log.d("StoryDebug", "Fetching stories from database for users: $allUserIds")
                     val allStories = try {
                         supabase.postgrest["stories"]
-                            .select()
+                            .select() {
+                                filter {
+                                    isIn("user_id", allUserIds)
+                                }
+                            }
                             .decodeList<Story>()
                     } catch (e: Exception) {
                         Log.e("StoryDebug", "Error fetching stories: ${e.message}")
                         emptyList()
                     }
                     
-                    Log.d("StoryDebug", "Total stories in DB: ${allStories.size}")
-                    Log.d("StoryDebug", "Current time: ${System.currentTimeMillis()}, 24h ago: $oneDayAgoMs")
+                    Log.d("StoryDebug", "Total stories in DB for followed users: ${allStories.size}")
                     
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
                     dateFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -124,7 +119,6 @@ class HomeFragment : Fragment() {
                             val storyDate = dateFormat.parse(story.timestamp) ?: return@filter false
                             val storyTime = storyDate.time
                             val isRecent = storyTime >= oneDayAgoMs
-                            Log.d("StoryDebug", "Story: id=${story.id}, time=$storyTime (${dateFormat.format(Date(storyTime))}), isRecent=$isRecent, user=${story.userId}")
                             isRecent
                         } catch (e: Exception) {
                             Log.e("StoryDebug", "Error processing story ${story.id}: ${e.message}")
@@ -134,7 +128,6 @@ class HomeFragment : Fragment() {
                     
                     // Get unique user IDs from stories
                     val userIds = stories.map { it.userId }.distinct()
-                    Log.d("StoryDebug", "Found ${userIds.size} unique users with stories")
                     
                     if (userIds.isNotEmpty()) {
                         // Fetch user data for stories
@@ -152,30 +145,20 @@ class HomeFragment : Fragment() {
                         // Merge story and user data
                         val storiesWithUsers = stories.map { story ->
                             val userData = users[story.userId]
-                            val storyWithUser = story.copy(
-                                username = userData?.username ?: "",
+                            story.copy(
+                                username = userData?.username ?: "Unknown",
                                 profileImage = userData?.image
                             )
-                            Log.d("StoryDebug", "Merged story: user=${storyWithUser.username}, hasImage=${storyWithUser.profileImage != null}")
-                            storyWithUser
-                        }
-                        
-                        Log.d("StoryDebug", "Total stories after merge: ${storiesWithUsers.size}")
-                        storiesWithUsers.forEachIndexed { index, story ->
-                            Log.d("StoryDebug", "Story $index: user=${story.username}, image=${story.imageUrl}")
                         }
                         
                         Log.d("StoryDebug", "Found ${storiesWithUsers.size} recent stories with user data")
                         storyList.clear()
                         storyList.addAll(storiesWithUsers)
-                        Log.d("StoryDebug", "Story list updated. New size: ${storyList.size}")
                         storyAdapter.notifyDataSetChanged()
-                        
-                        // Log the first story details if available
-                        if (storyList.isNotEmpty()) {
-                            val firstStory = storyList[0]
-                            Log.d("StoryDebug", "First story - ID: ${firstStory.id}, User: ${firstStory.username}, Image: ${firstStory.imageUrl}")
-                        }
+                    } else {
+                        // Clear stories if there are none
+                        storyList.clear()
+                        storyAdapter.notifyDataSetChanged()
                     }
                 }
             } catch (e: Exception) {
@@ -183,5 +166,4 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 }
