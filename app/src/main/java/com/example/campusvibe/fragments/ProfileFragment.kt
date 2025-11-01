@@ -72,12 +72,6 @@ class ProfileFragment : Fragment() {
                     val postCount = Json.parseToJsonElement(postResult).jsonObject.size
                     binding.postCount.text = postCount.toString()
 
-
-                    val reelResult = SupabaseClient.client.postgrest.from("reels").select() { filter {
-                        eq("user_id", userId)
-                    } }.data
-                    val reelCount = Json.parseToJsonElement(reelResult).jsonObject.size
-
                 } catch (e: Exception) {
                     // Handle exception
                 }
