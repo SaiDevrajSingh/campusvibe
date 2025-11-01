@@ -309,10 +309,10 @@ class PostAdapter(
                         
                         // Load profile image
                         if (!user.image.isNullOrEmpty()) {
-                            val avatarUrl = if (user.image.startsWith("http")) {
+                            val avatarUrl = if (user.image!!.startsWith("http")) {
                                 user.image
                             } else {
-                                SupabaseClient.getAvatarUrl(user.image)
+                                SupabaseClient.getAvatarUrl(user.image!!)
                             }
                             
                             Glide.with(context)
