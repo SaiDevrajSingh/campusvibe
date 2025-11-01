@@ -14,7 +14,6 @@ import com.example.campusvibe.databinding.MyPostRvDesignBinding
 import com.example.campusvibe.utils.SupabaseClient.client
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 class MyPostRvAdapter(var context: Context, var postList: ArrayList<Post>) :
     RecyclerView.Adapter<MyPostRvAdapter.ViewHolder>() {
@@ -41,13 +40,11 @@ class MyPostRvAdapter(var context: Context, var postList: ArrayList<Post>) :
                 intent.putExtra("postUrl", post.imageUrl)
                 intent.putExtra("caption", post.caption)
 
-                val user = client.from("users").select { 
+                val user = client.from("users").select {
                     filter {
                         eq("id", post.userId)
                     }
-                }.data.firstOrNull()?.let {
-                    Json.decodeFromString<User>(it.toString())
-                }
+                }.decodeSingleOrNull<User>()
 
                 intent.putExtra("profileImageUrl", user?.image)
                 intent.putExtra("username", user?.name)
