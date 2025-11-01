@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.campusvibe.Models.Post
 import com.example.campusvibe.Models.User
+import com.example.campusvibe.PostDetailActivity
 import com.example.campusvibe.R
 import com.example.campusvibe.databinding.PostRvBinding
 import com.example.campusvibe.utils.SupabaseClient
@@ -77,6 +78,21 @@ class PostAdapter(
         
         // Load user data asynchronously
         loadUserData(holder, post.userId)
+
+        holder.binding.postImage.setOnClickListener {
+            val intent = Intent(context, PostDetailActivity::class.java)
+            intent.putExtra("postUrl", post.imageUrl)
+            intent.putExtra("caption", post.caption)
+
+            coroutineScope.launch {
+                val user = userCache[post.userId] ?: fetchUserFromDatabase(post.userId)
+                user?.let {
+                    intent.putExtra("profileImageUrl", it.image)
+                    intent.putExtra("username", it.username)
+                    context.startActivity(intent)
+                }
+            }
+        }
         
         // Set initial like state
         val isLiked = likedPosts.contains(postId)

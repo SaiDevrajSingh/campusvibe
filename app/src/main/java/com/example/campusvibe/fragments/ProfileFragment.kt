@@ -1,11 +1,13 @@
 package com.example.campusvibe.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.example.campusvibe.EditProfileActivity
 import com.example.campusvibe.adapter.ViewPagerAdapter
 import com.example.campusvibe.databinding.FragmentProfileBinding
 import com.example.campusvibe.utils.SupabaseClient
@@ -35,6 +37,11 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = viewPagerAdapter.getPageTitle(position)
         }.attach()
+
+        binding.editProfile.setOnClickListener {
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            startActivity(intent)
+        }
 
         return binding.root
     }

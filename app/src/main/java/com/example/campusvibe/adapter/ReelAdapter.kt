@@ -1,18 +1,24 @@
 package com.example.campusvibe.adapter
 
 import android.content.Context
-import android.media.MediaPlayer
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
-import android.widget.MediaController
-import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campusvibe.Models.Reel
-import com.example.campusvibe.R
+import com.example.campusvibe.Models.User
+import com.example.campusvibe.ReelDetailActivity
 import com.example.campusvibe.databinding.ReelDgBinding
+import com.example.campusvibe.utils.SupabaseClient.client
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
-class ReelAdapter(var context: Context, var reelList: ArrayList<Reel>) : RecyclerView.Adapter<ReelAdapter.ViewHolder>() {
+class ReelAdapter(var context: Context, var reelList: ArrayList<Reel>) :
+    RecyclerView.Adapter<ReelAdapter.ViewHolder>() {
+
     inner class ViewHolder(var binding: ReelDgBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,47 +26,35 @@ class ReelAdapter(var context: Context, var reelList: ArrayList<Reel>) : Recycle
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = reelList.size
+    override fun getItemCount(): Int {
+        return reelList.size
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val reel = reelList[position]
-        
-        holder.binding.apply {
-            // Set user profile image (you can update this to load from URL)
-            profileImage.setImageResource(R.drawable.user)
-            
-            // Set caption
-            caption.text = reel.caption
-            
-            // Show loading
-            progressBar.visibility = View.VISIBLE
-            
-            try {
-                // Set up media controller
-                val mediaController = MediaController(context)
-                mediaController.setAnchorView(videoView)
-                videoView.setMediaController(mediaController)
-                
-                // Set video URI
-                videoView.setVideoPath(reel.videoUrl)
-                
-                videoView.setOnPreparedListener { mp ->
-                    progressBar.visibility = View.GONE
-                    mp.start()
-                    
-                    // Adjust video scaling
-                    mp.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+        holder.binding.videoView.setVideoPath(reel.videoUrl)
+        holder.binding.videoView.setOnPreparedListener {
+            holder.binding.progressBar.visibility = GONE
+            it.start()
+        }
+
+        holder.binding.videoView.setOnClickListener {
+            (context as androidx.appcompat.app.AppCompatActivity).lifecycleScope.launch {
+                val intent = Intent(context, ReelDetailActivity::class.java)
+                intent.putExtra("videoUrl", reel.videoUrl)
+                intent.putExtra("caption", reel.caption)
+
+                val user = client.from("users").select {
+                    filter {
+                        eq("id", reel.userId)
+                    }
+                }.data.firstOrNull()?.let {
+                    Json.decodeFromString<User>(it.toString())
                 }
-                
-                videoView.setOnErrorListener { _, what, extra ->
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(context, "Error playing video", Toast.LENGTH_SHORT).show()
-                    false
-                }
-                
-            } catch (e: Exception) {
-                progressBar.visibility = View.GONE
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                intent.putExtra("profileImageUrl", user?.image)
+                intent.putExtra("username", user?.name)
+                context.startActivity(intent)
             }
         }
     }
