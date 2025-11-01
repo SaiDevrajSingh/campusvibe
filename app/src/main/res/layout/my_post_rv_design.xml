@@ -3,13 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/post_image"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="186dp"
-        app:srcCompat="@drawable/logo"
-        tools:layout_editor_absoluteX="103dp"
-        tools:layout_editor_absoluteY="43dp" />
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" 
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/logo"
+            tools:layout_editor_absoluteX="103dp"
+            tools:layout_editor_absoluteY="43dp" />
+
+    </androidx.cardview.widget.CardView>
 </LinearLayout>
