@@ -9,7 +9,10 @@ import com.example.campusvibe.utils.SupabaseClient
 import com.squareup.picasso.Picasso
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.result.PostgrestResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -47,15 +50,19 @@ class EditProfileActivity : AppCompatActivity() {
                 val newBio = binding.bio.text.toString()
 
                 lifecycleScope.launch {
-                    SupabaseClient.client.from("users").update(
-                        buildJsonObject {
-                            put("name", newName)
-                            put("bio", newBio)
+                    // Perform the update in a background thread and wait for it to complete
+                    withContext(Dispatchers.IO) {
+                        SupabaseClient.client.from("users").update(
+                            buildJsonObject {
+                                put("name", newName)
+                                put("bio", newBio)
+                            }
+                        ) {
+                            filter { eq("id", currentUserId) }
                         }
-                    ) {
-                        filter { eq("id", currentUserId) }
                     }
-                    // Finish the activity AFTER the update is sent
+
+                    // Finish the activity on the main thread after the update is complete
                     finish()
                 }
             }

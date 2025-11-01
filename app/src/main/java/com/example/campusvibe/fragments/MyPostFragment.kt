@@ -34,7 +34,7 @@ class MyPostFragment : Fragment() {
             if (currentUserId != null) {
                 val posts = SupabaseClient.client.postgrest["posts"].select {
                     filter {
-                        eq("user_id", currentUserId)
+                        eq("userId", currentUserId)
                     }
                 }.decodeList<Post>()
                 postList.addAll(posts)
