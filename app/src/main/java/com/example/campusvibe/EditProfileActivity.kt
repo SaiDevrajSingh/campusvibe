@@ -26,11 +26,12 @@ class EditProfileActivity : AppCompatActivity() {
 
         if (currentUserId != null) {
             lifecycleScope.launch {
-                val user = SupabaseClient.client.from("users").select {
+                val users = SupabaseClient.client.from("users").select {
                     filter {
                         eq("id", currentUserId)
                     }
-                }.decodeSingleOrNull<User>()
+                }.decodeList<User>()
+                val user = users.firstOrNull()
 
                 if (user != null) {
                     binding.name.setText(user.name)

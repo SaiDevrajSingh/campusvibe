@@ -41,11 +41,12 @@ class MyPostRvAdapter(var context: Context, var postList: ArrayList<Post>) :
                 intent.putExtra("postUrl", post.imageUrl)
                 intent.putExtra("caption", post.caption)
 
-                val user = client.from("users").select {
+                val users = client.from("users").select {
                     filter {
                         eq("id", post.userId)
                     }
-                }.decodeSingleOrNull<User>()
+                }.decodeList<User>()
+                val user = users.firstOrNull()
 
                 intent.putExtra("profileImageUrl", user?.image)
                 intent.putExtra("username", user?.name)
