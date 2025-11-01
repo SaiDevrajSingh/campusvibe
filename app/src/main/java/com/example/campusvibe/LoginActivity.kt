@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.loginBtn.setOnClickListener {
-            if (binding.email.editText?.text.toString().equals("") or
+            if (binding.email.editText?.text.toString().equals("") ||
                 binding.pass.editText?.text.toString().equals("")
             ) {
                 Toast.makeText(this@LoginActivity, "please fill the details", Toast.LENGTH_SHORT)
@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
                     } catch (e: Exception) {
                         Toast.makeText(
                             this@LoginActivity,
-                            e.localizedMessage,
+                            "Login failed. Please check your credentials and try again.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
