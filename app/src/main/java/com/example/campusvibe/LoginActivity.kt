@@ -21,8 +21,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        SupabaseClient.initialize(this)
-
         binding.loginBtn.setOnClickListener {
             if (binding.email.editText?.text.toString().equals("") or
                 binding.pass.editText?.text.toString().equals("")
