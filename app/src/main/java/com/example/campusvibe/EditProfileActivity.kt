@@ -25,37 +25,38 @@ class EditProfileActivity : AppCompatActivity() {
         val currentUserId = SupabaseClient.client.auth.currentUserOrNull()?.id
 
         if (currentUserId != null) {
+            // Fetch and display initial data
             lifecycleScope.launch {
                 val users = SupabaseClient.client.from("users").select {
-                    filter {
-                        eq("id", currentUserId)
-                    }
+                    filter { eq("id", currentUserId) }
                 }.decodeList<User>()
                 val user = users.firstOrNull()
 
-                if (user != null) {
-                    binding.name.setText(user.name)
-                    binding.bio.setText(user.bio)
-                    if (user.image != null) {
-                        Picasso.get().load(user.image).into(binding.profileImage)
+                user?.let {
+                    binding.name.setText(it.name)
+                    binding.bio.setText(it.bio)
+                    if (it.image != null) {
+                        Picasso.get().load(it.image).into(binding.profileImage)
                     }
                 }
+            }
 
-                binding.saveButton.setOnClickListener {
-                    val newName = binding.name.text.toString()
-                    val newBio = binding.bio.text.toString()
+            // Set up save button listener
+            binding.saveButton.setOnClickListener {
+                val newName = binding.name.text.toString()
+                val newBio = binding.bio.text.toString()
 
-                    lifecycleScope.launch {
-                        SupabaseClient.client.from("users").update(
-                            buildJsonObject {
-                                put("name", newName)
-                                put("bio", newBio)
-                            }
-                        ) { filter {
-                            eq("id", currentUserId)
-                        } }
-                        finish()
+                lifecycleScope.launch {
+                    SupabaseClient.client.from("users").update(
+                        buildJsonObject {
+                            put("name", newName)
+                            put("bio", newBio)
+                        }
+                    ) {
+                        filter { eq("id", currentUserId) }
                     }
+                    // Finish the activity AFTER the update is sent
+                    finish()
                 }
             }
         }
