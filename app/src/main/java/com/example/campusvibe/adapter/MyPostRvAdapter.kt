@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -35,7 +36,7 @@ class MyPostRvAdapter(var context: Context, var postList: ArrayList<Post>) :
         Glide.with(context).load(post.imageUrl).into(holder.binding.postImage)
 
         holder.binding.postImage.setOnClickListener {
-            (context as androidx.appcompat.app.AppCompatActivity).lifecycleScope.launch {
+            (context as AppCompatActivity).lifecycleScope.launch {
                 val intent = Intent(context, PostDetailActivity::class.java)
                 intent.putExtra("postUrl", post.imageUrl)
                 intent.putExtra("caption", post.caption)

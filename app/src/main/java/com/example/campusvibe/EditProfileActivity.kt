@@ -9,7 +9,6 @@ import com.example.campusvibe.utils.SupabaseClient
 import com.squareup.picasso.Picasso
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -46,7 +45,7 @@ class EditProfileActivity : AppCompatActivity() {
                     val newBio = binding.bio.text.toString()
 
                     lifecycleScope.launch {
-                        SupabaseClient.client.postgrest.from("users").update(
+                        SupabaseClient.client.from("users").update(
                             buildJsonObject {
                                 put("name", newName)
                                 put("bio", newBio)
